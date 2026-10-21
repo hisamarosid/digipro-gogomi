@@ -8,6 +8,15 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.join(__dirname),
+  // Shared hosting limits processes/threads (EAGAIN, "OS can't spawn worker thread"),
+  // so build with a single worker instead of one per CPU core.
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
+    webpackBuildWorker: false,
+    parallelServerCompiles: false,
+    parallelServerBuildTraces: false,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
