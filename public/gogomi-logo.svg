@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" fill="none">
+  <!-- Outer Shadow Layer -->
+  <path d="M 60 70 C 60 30, 110 15, 160 15 C 200 15, 240 30, 280 30 C 320 30, 360 15, 410 20 C 460 25, 480 70, 475 120 C 485 170, 470 220, 440 255 C 400 290, 330 300, 280 295 C 230 305, 170 300, 110 280 C 60 250, 45 190, 50 140 Z" fill="#9D9D9D"/>
+  
+  <!-- Middle Layer Shadow -->
+  <path d="M 75 55 C 75 20, 125 10, 175 10 C 215 10, 255 25, 295 25 C 335 25, 375 10, 425 15 C 470 20, 490 60, 485 110 C 495 160, 480 205, 450 240 C 410 275, 345 285, 295 280 C 245 290, 185 285, 125 265 C 75 235, 60 175, 65 125 Z" fill="#525252"/>
+  
+  <!-- Primary Badge Container -->
+  <path d="M 90 40 C 90 10, 140 0, 190 0 C 230 0, 270 15, 310 15 C 350 15, 390 0, 440 5 C 485 10, 500 50, 495 100 C 505 150, 490 195, 460 230 C 420 265, 355 275, 305 270 C 255 280, 195 275, 135 255 C 85 225, 75 165, 80 115 Z" fill="#333333"/>
+  
+  <!-- Main Text -->
+  <text x="110" y="115" font-family="'Inter', 'Roboto', 'Arial Black', sans-serif" font-weight="900" font-size="82" fill="#FFFFFF" letter-spacing="2">GOGO</text>
+  <text x="110" y="210" font-family="'Inter', 'Roboto', 'Arial Black', sans-serif" font-weight="900" font-size="82" fill="#FFFFFF" letter-spacing="2">MI</text>
+  <text x="215" y="205" font-family="'Inter', 'Roboto', 'Arial Black', sans-serif" font-weight="800" font-size="25" fill="#FFFFFF" letter-spacing="2.5">DIGITAL STORE</text>
+</svg>

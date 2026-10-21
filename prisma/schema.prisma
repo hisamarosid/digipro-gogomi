@@ -1,0 +1,2657 @@
+// Prisma Schema for DigiPro Store
+// Fullstack Digital Product E-Commerce Platform
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  ORDER_STAFF
+  SUPPORT
+  EDITOR
+  CUSTOMER
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum DeliveryType {
+  LICENSE_KEY
+  ACCOUNT
+  DOWNLOAD
+  MANUAL
+  SUBSCRIPTION
+}
+
+enum DeliveryModel {
+  DEDICATED_ACCOUNT
+  SHARED_ACCOUNT
+  FAMILY_MEMBER
+  LICENSE_KEY
+  DOWNLOAD
+  MANUAL
+}
+
+enum SharedAccountStatus {
+  AVAILABLE
+  PARTIALLY_USED
+  FULL
+  EXPIRING
+  INVALID
+  EXPIRED
+  DISABLED
+}
+
+enum SharedSlotStatus {
+  AVAILABLE
+  RESERVED
+  ASSIGNED
+  REPLACED
+  EXPIRED
+  INVALID
+  DISABLED
+}
+
+enum FamilyGroupStatus {
+  AVAILABLE
+  PARTIALLY_USED
+  FULL
+  EXPIRING
+  INVALID
+  EXPIRED
+  DISABLED
+}
+
+enum FamilyInvitationStatus {
+  NOT_ASSIGNED
+  PENDING
+  INVITED
+  ACCEPTED
+  ACTIVE
+  FAILED
+  REMOVED
+  EXPIRED
+}
+
+enum StockStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  DISABLED
+  ASSIGNED
+  REPLACED
+  INVALID
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PROCESSING
+  COMPLETED
+  EXPIRED
+  CANCELLED
+  REFUNDED
+  FAILED
+  NEEDS_FULFILLMENT
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  EXPIRED
+  CANCELLED
+  FAILED
+}
+
+enum FulfillmentStatus {
+  PENDING
+  FULFILLED
+  FAILED
+  ACTIVE
+  REPLACED
+  REVOKED
+  EXPIRED
+  INVALID
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRING
+  EXPIRED
+  CANCELLED
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+  REJECTED
+}
+
+
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum SenderType {
+  CUSTOMER
+  STAFF
+}
+
+// Priority 2 Enums
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum InventorySourceType {
+  SUPPLIER
+  SUPPLIER_PURCHASE
+  SUPPLIER_WARRANTY_REPLACEMENT
+  INTERNAL
+  MANUAL_PURCHASE
+  PARTNER
+  OTHER
+}
+
+enum SupplierContactMethod {
+  WHATSAPP
+  TELEGRAM
+  EMAIL
+  DISCORD
+  WEBSITE
+  MARKETPLACE_CHAT
+  OTHER
+}
+
+enum WarrantyStartFrom {
+  PURCHASE_DATE
+  DELIVERY_DATE
+  ACTIVATION_DATE
+  CUSTOM_DATE
+}
+
+enum WarrantyIneligibilityReason {
+  NO_SUPPLIER
+  NO_WARRANTY_POLICY
+  WARRANTY_EXPIRED
+  CLAIM_DEADLINE_EXPIRED
+  CUSTOMER_CAUSED_ISSUE
+  NON_CLAIMABLE_FAILURE
+  ALREADY_CLAIMED
+  SUPPLIER_ARCHIVED_WITHOUT_SUPPORT
+  UNKNOWN
+}
+
+enum InventoryAssetType {
+  DEDICATED_INVENTORY
+  SHARED_MASTER
+  SHARED_SLOT
+  FAMILY_GROUP
+  FAMILY_SLOT
+  LICENSE_KEY
+  OTHER
+}
+
+enum InventoryFailureReason {
+  LOGIN_FAILED
+  PASSWORD_INVALID
+  ACCOUNT_DISABLED
+  ACCOUNT_LOCKED
+  ACCOUNT_EXPIRED_EARLY
+  LICENSE_REVOKED
+  LICENSE_INVALID
+  SUBSCRIPTION_INACTIVE
+  SHARED_MASTER_INVALID
+  FAMILY_GROUP_INVALID
+  FAMILY_INVITE_FAILURE
+  PROFILE_UNAVAILABLE
+  FEATURE_NOT_WORKING
+  CREDENTIAL_CHANGED_UNEXPECTEDLY
+  SUPPLIER_DELIVERY_INVALID
+  CUSTOMER_ERROR
+  CUSTOMER_MISUSE
+  CUSTOMER_REQUEST
+  CONFIGURATION_ERROR_INTERNAL
+  PLATFORM_ERROR_INTERNAL
+  UNKNOWN_RESPONSIBILITY
+}
+
+enum IncidentStatus {
+  OPEN
+  UNDER_REVIEW
+  CONFIRMED_INVALID
+  RESOLVED
+  CLOSED
+}
+
+enum ClaimSourceType {
+  CUSTOMER_REPLACEMENT
+  INVENTORY_HEALTH_CHECK
+  ADMIN_MANUAL_REVIEW
+  MASS_REPLACEMENT
+  PROACTIVE_VALIDATION
+}
+
+enum SupplierWarrantyClaimStatus {
+  DRAFT
+  REVIEW_REQUIRED
+  READY_TO_CLAIM
+  SUBMITTED
+  WAITING_SUPPLIER
+  APPROVED
+  REPLACEMENT_PENDING_RECEIPT
+  REFUND_PENDING_RECEIPT
+  CREDIT_PENDING_RECEIPT
+  REPLACEMENT_RECEIVED
+  REFUND_RECEIVED
+  CREDIT_RECEIVED
+  REJECTED
+  CANCELLED
+  CLOSED
+}
+
+enum SupplierClaimResponseType {
+  ACKNOWLEDGED
+  REQUESTED_MORE_INFORMATION
+  APPROVED_REPLACEMENT
+  APPROVED_FULL_REFUND
+  APPROVED_PARTIAL_REFUND
+  APPROVED_CREDIT
+  REJECTED
+  OTHER
+}
+
+enum SupplierClaimResolutionType {
+  REPLACEMENT
+  FULL_REFUND
+  PARTIAL_REFUND
+  SUPPLIER_CREDIT
+  REJECTED
+  NO_RECOVERY
+  OTHER
+}
+
+enum SupplierRecoveryType {
+  REPLACEMENT
+  FULL_REFUND
+  PARTIAL_REFUND
+  SUPPLIER_CREDIT
+}
+
+enum CostAllocationMode {
+  EQUAL_PER_SLOT
+  FULL_COST_FIRST_SLOT
+  CUSTOM_PER_SLOT
+  RECOGNIZE_ON_ASSIGNMENT
+}
+
+enum NotificationSeverity {
+  INFO
+  WARNING
+  HIGH
+  CRITICAL
+}
+
+enum AdminNotificationCategory {
+  ORDER
+  PAYMENT
+  FULFILLMENT
+  INVENTORY
+  REPLACEMENT
+  SUBSCRIPTION
+  SUPPORT
+  SUPPLIER
+  SECURITY
+  SYSTEM
+  LOYALTY
+}
+
+enum CustomerNotificationCategory {
+  ORDER
+  PAYMENT
+  PRODUCT
+  REPLACEMENT
+  SUBSCRIPTION
+  COIN
+  SUPPORT
+  SECURITY
+  PROMOTION
+}
+
+enum PaymentFeeMode {
+  NONE
+  FIXED
+  PERCENTAGE
+  FIXED_PLUS_PERCENTAGE
+  MANUAL
+}
+
+// Priority 3 Enums
+enum RenewalFulfillmentMode {
+  EXTEND_EXISTING
+  CREATE_NEW
+  REPLACE_ACCESS
+}
+
+enum RenewalPriceMode {
+  CURRENT_PRICE
+  CUSTOM_PRICE
+  DISCOUNT_PERCENTAGE
+}
+
+enum WaitlistStatus {
+  ACTIVE
+  NOTIFIED
+  CONVERTED
+  UNSUBSCRIBED
+  EXPIRED
+  CANCELLED
+}
+
+enum WaitlistNotifyStrategy {
+  ALL
+  MATCH_STOCK
+  MULTIPLIER
+}
+
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  REWARDED
+  REVERSED
+  REJECTED
+}
+
+enum ReferralRiskReason {
+  SELF_REFERRAL
+  SAME_DEVICE_PATTERN
+  SUSPICIOUS_IP_CLUSTER
+  RAPID_ACCOUNT_CREATION
+  HIGH_REFUND_RATE
+  MULTIPLE_PAYMENT_REVERSALS
+  REFERRAL_FARMING_PATTERN
+}
+
+// ----------------------------------------------------
+// USER & AUTHENTICATION
+// ----------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  phone         String?
+  role          Role      @default(CUSTOMER)
+  emailVerified DateTime?
+  termsAcceptedAt DateTime?
+  privacyAcceptedAt DateTime?
+  image         String?
+  disabled      Boolean   @default(false)
+  referralCode  String?   @unique
+  referredByUserId String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  referrer         User?            @relation("UserReferrals", fields: [referredByUserId], references: [id])
+  referrals        User[]           @relation("UserReferrals")
+  waitlists        ProductWaitlist[]
+  referralRewardsGiven    ReferralReward[] @relation("ReferrerRewards")
+  referralRewardsReceived ReferralReward[] @relation("ReferredRewards")
+
+  sessions         Session[]
+  orders           Order[]
+  reviews          Review[]
+  supportTickets   SupportTicket[]
+  supportMessages  SupportMessage[]
+  uploadedAttachments SupportAttachment[]
+  subscriptions    Subscription[]
+  couponUsages     CouponUsage[]
+  downloadAccesses DownloadAccess[]
+  auditLogs        AuditLog[]       @relation("ActorAuditLogs")
+  replacementRequests ReplacementRequest[]
+  fulfillmentJobs  FulfillmentJob[]
+  resourceReservations ResourceReservation[]
+  adminNotifications AdminNotificationRecipient[]
+  customerNotifications CustomerNotification[]
+  emailJobs             EmailJob[]
+  customerNotificationPreference CustomerNotificationPreference?
+  adminNotificationPreference AdminNotificationPreference?
+  coinGrants       CoinGrant[]
+  coinReservations CoinReservation[]
+  coinRedemptions  CoinRedemption[]
+  coinLedgerEntries CoinLedgerEntry[]
+  sharedAccountSlots SharedAccountSlot[]
+  familyMemberSlots  FamilyMemberSlot[]
+  customerLoyaltyTier CustomerLoyaltyTier?
+  loyaltyTierHistories CustomerLoyaltyTierHistory[]
+  wishlistItems       WishlistItem[]
+  recentlyViewedProducts RecentlyViewedProduct[]
+  priceWatches        PriceWatch[]
+  milestoneRewards    CustomerMilestoneReward[]
+  permissions         UserPermission[]
+  verificationRequests VerificationRequest[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model UserPermission {
+  id         String   @id @default(cuid())
+  userId     String
+  permission String
+  grantedAt  DateTime @default(now())
+  grantedBy  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permission])
+  @@index([userId])
+  @@index([permission])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  tokenHash String   @unique
+  expires   DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([tokenHash])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  email     String
+  tokenHash String   @unique
+  expires   DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([tokenHash])
+}
+
+// ----------------------------------------------------
+// CATALOG (CATEGORIES, PRODUCTS, VARIANTS, TAGS)
+// ----------------------------------------------------
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  image       String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  seoTitle    String?
+  seoDesc     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+
+  @@index([slug])
+  @@index([active])
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  sku         String        @unique
+  shortDesc   String
+  fullDesc    String
+  categoryId  String
+  thumbnail   String?
+  gallery     Json? // Array of image URLs (JSON for MySQL)
+  viewCount   Int           @default(0)
+  soldCount   Int           @default(0)
+  status      ProductStatus @default(DRAFT)
+  featured    Boolean       @default(false)
+  bestSeller  Boolean       @default(false)
+  seoTitle    String?
+  seoDesc     String?
+  publishedAt DateTime?
+
+  // Customer Guide (Tutorial & Product Terms)
+  tutorialContent             String?
+  termsContent                String?
+  importantNotes              String?
+  guideVersion                Int           @default(1)
+  showGuideAfterDelivery      Boolean       @default(false)
+  requireGuideAcknowledgement Boolean       @default(false)
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  category Category         @relation(fields: [categoryId], references: [id])
+  variants ProductVariant[]
+  tags     ProductTag[]
+  reviews  Review[]
+  faqs     ProductFaq[]
+  replacementRequests ReplacementRequest[]
+  wishlistItems       WishlistItem[]
+  recentlyViewedProducts RecentlyViewedProduct[]
+  priceWatches        PriceWatch[]
+  customerOffers      CustomerOffer[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([status])
+  @@index([featured])
+  @@index([bestSeller])
+}
+
+enum SubscriptionStartPolicy {
+  ON_FULFILLMENT
+  ON_PAYMENT
+  CUSTOM
+}
+
+enum ExpirationReason {
+  DELIVERY_DEADLINE_REACHED
+  MANUAL_INVALIDATION
+  PROVIDER_EXPIRATION
+  OTHER
+}
+
+model ProductVariant {
+  id               String       @id @default(cuid())
+  productId        String
+  name             String
+  sku              String       @unique
+  price            Int          // Price in IDR (integer)
+  compareAtPrice   Int?         // Strike-through price in IDR
+  cost             Int          @default(0) // Cost price for calculation
+  stockMode        String       @default("INVENTORY") // INVENTORY or UNLIMITED
+  deliveryType     DeliveryType  @default(LICENSE_KEY)
+  deliveryModel    DeliveryModel @default(DEDICATED_ACCOUNT)
+  subscriptionDays Int?          // Subscription duration in days
+  warrantyDays     Int?          @default(30) // Warranty period in days
+  active           Boolean       @default(true)
+  sortOrder        Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventoryItems      InventoryItem[]
+  orderItems          OrderItem[]
+  fulfillments        Fulfillment[]
+  subscriptions       Subscription[]
+  downloadAssets      DownloadAsset[]
+  replacementRequests ReplacementRequest[]
+  sharedAccounts      SharedAccount[]
+  familyGroups        FamilyGroup[]
+  batches             InventoryBatch[]
+
+  defaultCostAmount                  Int                     @default(0)
+  minimumMarginMode                  String                  @default("GLOBAL")
+  customMinimumMargin                Float?
+
+  replacementEnabled                  Boolean                 @default(false)
+  replacementMode                     ReplacementMode         @default(DISABLED)
+  replacementCooldownHours           Int                     @default(72)
+  replacementMaxCount                Int?
+  replacementValidityType            ReplacementValidityType @default(SUBSCRIPTION)
+  replacementValidityDays            Int?
+  replacementRequiresReason          Boolean                 @default(false)
+  replacementAllowWhenOutOfStockQueue Boolean                 @default(false)
+
+  credentialExpirationEnabled        Boolean                 @default(false)
+  credentialDeliveryValidityHours    Int?                    @default(72)
+  subscriptionStartPolicy            SubscriptionStartPolicy @default(ON_FULFILLMENT)
+
+  coinEarningMode                    CoinEarningMode         @default(USE_GLOBAL)
+  coinRewardPercentage               Float?
+  coinRedemptionMode                 CoinRedemptionMode      @default(USE_GLOBAL)
+  coinMaxRedemptionPercentage        Int?
+  coinFullPaymentAllowed             Boolean                 @default(false)
+
+  sharedCapacityDefault                   Int?     @default(2)
+  sharedSlotLabelPrefix                   String?  @default("USER")
+  sharedSafetyBufferDays                  Int?     @default(2)
+  sharedRequireMasterLifetimeCheck        Boolean  @default(true)
+  sharedAllowSlotReuseAfterExpiration     Boolean  @default(false)
+  sharedAllowMassReplacement              Boolean  @default(true)
+  sharedExposeMasterCredentialToCustomer Boolean  @default(true)
+  sharedExposeSlotPin                     Boolean  @default(true)
+  usesProfile                             Boolean  @default(true)
+  usesProfilePin                          Boolean  @default(true)
+
+  waitlists ProductWaitlist[]
+
+  renewalEnabled                          Boolean                 @default(true)
+  renewalTargetVariantId                  String?
+  renewalFulfillmentMode                  RenewalFulfillmentMode  @default(EXTEND_EXISTING)
+  renewalGracePeriodDays                  Int                     @default(7)
+  renewalAllowBeforeExpiry                Boolean                 @default(true)
+  renewalAllowAfterExpiry                 Boolean                 @default(true)
+  renewalPriceMode                        RenewalPriceMode        @default(CURRENT_PRICE)
+  renewalCustomPrice                      Int?
+  renewalDiscountPercentage               Float?
+
+  waitlistEnabled                         Boolean                 @default(true)
+  waitlistNotifyOnRestock                 Boolean                 @default(true)
+  waitlistNotificationCooldownHours        Int                     @default(24)
+
+  minimumLoyaltyTierRank                  Int                     @default(0)
+
+  wishlistItems                           WishlistItem[]
+  recentlyViewedProducts                  RecentlyViewedProduct[]
+  priceWatches                            PriceWatch[]
+  customerOffers                          CustomerOffer[]
+
+  @@index([productId])
+  @@index([sku])
+  @@index([active])
+}
+
+model Tag {
+  id    String       @id @default(cuid())
+  name  String       @unique
+  slug  String       @unique
+  products ProductTag[]
+}
+
+model ProductTag {
+  productId String
+  tagId     String
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([productId, tagId])
+}
+
+model ProductFaq {
+  id        String   @id @default(cuid())
+  productId String
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ----------------------------------------------------
+// DIGITAL INVENTORY
+// ----------------------------------------------------
+
+model InventoryItem {
+  id                            String            @id @default(cuid())
+  variantId                     String
+  type                          DeliveryType
+  payloadCipher                 String            @db.Text // AES-256-GCM Encrypted payload (Key/Credential/URL)
+  payloadIv                     String            // Initialization vector for encryption
+  payloadAuthTag                String            // Auth tag for GCM verification
+  status                        StockStatus       @default(AVAILABLE)
+  assignedOrderItemId           String?           @unique
+  createdAt                     DateTime          @default(now())
+  assignedAt                    DateTime?
+  expiresAt                     DateTime?
+  deliveryValidityHoursOverride Int?
+  expiredAt                     DateTime?
+  expirationReason              ExpirationReason?
+
+  supplierId                    String?
+  sourceType                    InventorySourceType @default(INTERNAL)
+  batchId                       String?
+  costAmount                    Int                 @default(0)
+  costCurrency                  String              @default("IDR")
+  purchasedAt                   DateTime?
+  supplierReference             String?
+
+  // Verification Access System (Per-Inventory Config)
+  verificationRequired     Boolean            @default(false)
+  verificationMethod       VerificationMethod @default(NONE)
+  verificationEmail        String?            // Secondary / Verification email
+  verificationAccessUrl    String?            @db.Text // External URL for EXTERNAL_INBOX_URL
+  verificationMailboxId    String?            // Linked Gogomi Mailbox ID
+  verificationProvider     String?            // NETFLIX, ADOBE, CANVA, SPOTIFY, CHATGPT, CLAUDE, OTHER
+  verificationInstructions String?            @db.Text
+
+  variant      ProductVariant  @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  supplier     Supplier?       @relation(fields: [supplierId], references: [id])
+  batch        InventoryBatch? @relation(fields: [batchId], references: [id])
+  orderItem    OrderItem?      @relation(fields: [assignedOrderItemId], references: [id])
+  fulfillments Fulfillment[]
+  previousReplacements ReplacementRequest[] @relation("PreviousInventoryRelation")
+  newReplacements      ReplacementRequest[] @relation("NewInventoryRelation")
+
+  @@index([variantId])
+  @@index([status])
+  @@index([supplierId])
+  @@index([batchId])
+  @@index([assignedOrderItemId])
+  @@index([expiresAt])
+}
+
+// ----------------------------------------------------
+// SHOPPING CART (PERSISTENT / SESSION)
+// ----------------------------------------------------
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String?  @unique
+  sessionId String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  variantId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+}
+
+// ----------------------------------------------------
+// ORDERS & ORDER ITEMS
+// ----------------------------------------------------
+
+model Order {
+  id             String      @id @default(cuid())
+  orderNumber    String      @unique // e.g. ORD-260813-X7K29A
+  userId         String?     // Null for guest checkout
+  guestEmail     String?     // Guest email
+  guestName      String?     // Guest name
+  guestPhone     String?     // Guest WhatsApp/phone
+  guestToken     String?     // Unpredictable secure token for guest order tracking
+  totalAmount    Int         // Subtotal in IDR
+  discountAmount Int         @default(0) // Discount amount in IDR
+  grandTotal     Int         // Final total in IDR
+  coinUsed       Int         @default(0)
+  coinDiscountAmount Int     @default(0) // Discount amount in IDR
+  coinValuePerUnitSnapshot Int @default(10) // 1 coin = Rp10 snapshot
+  cashPayableAmount Int      @default(0) // QRIS payable amount in IDR
+  rewardPercentageSnapshot Float?
+  eligibleRewardAmount Int   @default(0)
+  coinsEarned    Int         @default(0)
+  couponId       String?
+  status         OrderStatus @default(PENDING_PAYMENT)
+  paymentStatus  PaymentStatus @default(PENDING)
+  internalNotes  String?
+  isRenewal      Boolean     @default(false)
+  renewalOfSubscriptionId String?
+  referredByCode String?
+  referredByUserId String?
+  loyaltyTierIdSnapshot String?
+  tierDiscountAmount Int     @default(0)
+  tierCoinMultiplierSnapshot Float @default(1.0)
+  wishlistInfluenced Boolean @default(false)
+  waitlistInfluenced Boolean @default(false)
+  priceDropInfluenced Boolean @default(false)
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  user           User?           @relation(fields: [userId], references: [id])
+  coupon         Coupon?         @relation(fields: [couponId], references: [id])
+  renewalOfSubscription Subscription? @relation("SubscriptionRenewals", fields: [renewalOfSubscriptionId], references: [id])
+  items          OrderItem[]
+  payments       Payment[]
+  supportTickets SupportTicket[]
+  couponUsages   CouponUsage[]
+  reviews        Review[]
+  replacementRequests ReplacementRequest[]
+  coinReservation CoinReservation?
+  coinRedemption  CoinRedemption?
+  sharedAccountSlots SharedAccountSlot[]
+  familyMemberSlots  FamilyMemberSlot[]
+  fulfillmentJobs    FulfillmentJob[]
+  resourceReservations ResourceReservation[]
+  financialSnapshot  OrderFinancialSnapshot?
+
+  @@index([orderNumber])
+  @@index([userId])
+  @@index([guestEmail])
+  @@index([guestToken])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([userId, status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String       @id @default(cuid())
+  orderId      String
+  variantId    String
+  productName  String       // Historical snapshot
+  variantName  String       // Historical snapshot
+  sku          String       // Historical snapshot
+  unitPrice    Int          // Historical snapshot in IDR
+  discount     Int          @default(0)
+  quantity     Int          @default(1)
+  subtotal     Int          // Historical snapshot in IDR
+  deliveryType          DeliveryType
+  deliveryModelSnapshot String?
+  invitationEmail       String?
+  warrantyDays          Int          @default(30)
+  costAmountSnapshot    Int          @default(0)
+  isCostUnknown         Boolean      @default(false)
+  supplierId            String?
+  renewalOfSubscriptionId String?
+
+  // Customer Guide Historical Snapshot & Acknowledgement
+  guideVersionSnapshot                Int?
+  tutorialSnapshot                    String?
+  termsSnapshot                       String?
+  importantNotesSnapshot              String?
+  requireGuideAcknowledgementSnapshot Boolean?     @default(false)
+  guideAcknowledgedAt                 DateTime?
+
+  createdAt             DateTime     @default(now())
+
+  order               Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant             ProductVariant       @relation(fields: [variantId], references: [id])
+  supplier            Supplier?            @relation(fields: [supplierId], references: [id])
+  inventoryItem       InventoryItem?
+  fulfillments        Fulfillment[]
+  subscriptions       Subscription[]
+  downloadAccess      DownloadAccess[]
+  replacementRequests ReplacementRequest[]
+  sharedAccountSlots  SharedAccountSlot[]
+  familyMemberSlots   FamilyMemberSlot[]
+  fulfillmentJobs     FulfillmentJob[]
+  resourceReservations ResourceReservation[]
+  verificationRequests VerificationRequest[]
+
+  @@index([orderId])
+  @@index([variantId])
+  @@index([supplierId])
+  @@index([guideAcknowledgedAt])
+}
+
+// ----------------------------------------------------
+// PAYMENT & WEBHOOK LOGS
+// ----------------------------------------------------
+
+model Payment {
+  id                    String        @id @default(cuid())
+  orderId               String
+  provider              String        @default("AUTOGOPAY")
+  externalTransactionId String?       @unique // AutoGoPay transaction_id
+  amount                Int           // Expected payment amount in IDR
+  qrString              String?       @db.Text // Raw QRIS payload
+  qrUrl                 String?       @db.Text // QR Code image URL
+  checkoutUrl           String?       @db.Text
+  status                PaymentStatus @default(PENDING)
+  transactionTime       DateTime?
+  expiryTime            DateTime?
+  rawResponse           String?       @db.Text // JSON stringified provider response
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([externalTransactionId])
+  @@index([status])
+}
+
+model PaymentLog {
+  id                    String   @id @default(cuid())
+  provider              String   @default("AUTOGOPAY")
+  event                 String
+  externalTransactionId String?
+  signatureValid        Boolean
+  payloadHash           String
+  status                String
+  processed             Boolean  @default(false)
+  processingResult      String?  @db.Text
+  payload               String   @db.Text // Raw payload string
+  createdAt             DateTime @default(now())
+  processedAt           DateTime?
+
+  @@index([externalTransactionId])
+  @@index([signatureValid])
+  @@index([payloadHash])
+}
+
+// ----------------------------------------------------
+// FULFILLMENT & SUBSCRIPTIONS
+// ----------------------------------------------------
+
+model Fulfillment {
+  id                  String            @id @default(cuid())
+  orderItemId         String
+  variantId           String
+  deliveryType        DeliveryType
+  inventoryItemId     String?
+  sharedAccountSlotId String?
+  familyMemberSlotId  String?
+  payloadRevealed     String?           // Decrypted payload snapshot for customer display
+  downloadToken       String?           @unique
+  subscriptionExpires DateTime?
+  status              FulfillmentStatus @default(PENDING)
+  deliveredAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  orderItem            OrderItem            @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  variant              ProductVariant       @relation(fields: [variantId], references: [id])
+  inventoryItem        InventoryItem?       @relation(fields: [inventoryItemId], references: [id])
+  sharedAccountSlot    SharedAccountSlot?   @relation(fields: [sharedAccountSlotId], references: [id])
+  familyMemberSlot     FamilyMemberSlot?    @relation(fields: [familyMemberSlotId], references: [id])
+  previousReplacements ReplacementRequest[] @relation("PreviousFulfillmentRelation")
+  newReplacements      ReplacementRequest[] @relation("NewFulfillmentRelation")
+
+  @@index([orderItemId])
+  @@index([downloadToken])
+  @@index([status])
+}
+
+model Subscription {
+  id          String             @id @default(cuid())
+  userId      String
+  orderItemId String
+  variantId   String
+  status      SubscriptionStatus @default(ACTIVE)
+  activatedAt DateTime           @default(now())
+  expiresAt   DateTime
+  renewalCount Int              @default(0)
+  lastRenewedAt DateTime?
+  renewalTargetVariantIdSnapshot String?
+  renewalFulfillmentModeSnapshot RenewalFulfillmentMode?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItem     OrderItem      @relation(fields: [orderItemId], references: [id])
+  variant       ProductVariant @relation(fields: [variantId], references: [id])
+  renewedOrders Order[]        @relation("SubscriptionRenewals")
+
+  @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
+  @@index([userId, status])
+}
+
+// ----------------------------------------------------
+// COUPONS & DISCOUNTS
+// ----------------------------------------------------
+
+model Coupon {
+  id              String     @id @default(cuid())
+  code            String     @unique
+  type            CouponType @default(PERCENTAGE)
+  value           Int        // Percentage (e.g. 10 for 10%) or Fixed amount in IDR
+  minimumPurchase Int        @default(0)
+  maximumDiscount Int?       // Max discount cap for percentage coupon
+  usageLimit      Int?       // Total global usage limit
+  usagePerUser    Int        @default(1)
+  usedCount       Int        @default(0)
+  startsAt        DateTime?
+  expiresAt       DateTime?
+  active          Boolean    @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  orders       Order[]
+  couponUsages CouponUsage[]
+
+  @@index([code])
+  @@index([active])
+}
+
+model CouponUsage {
+  id       String   @id @default(cuid())
+  couponId String
+  userId   String?
+  orderId  String
+  usedAt   DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id])
+  order  Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([couponId])
+  @@index([userId])
+  @@index([orderId])
+}
+
+// ----------------------------------------------------
+// REVIEWS & RATINGS
+// ----------------------------------------------------
+
+model Review {
+  id        String       @id @default(cuid())
+  productId String
+  userId    String
+  orderId   String
+  rating    Int          // 1-5
+  title     String
+  comment   String
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order   Order   @relation(fields: [orderId], references: [id])
+
+  @@index([productId])
+  @@index([userId])
+  @@index([status])
+}
+
+
+
+// ----------------------------------------------------
+// SUPPORT & WARRANTY TICKETS
+// ----------------------------------------------------
+
+model SupportTicket {
+  id           String         @id @default(cuid())
+  ticketNumber String         @unique // e.g. TCK-260813-001
+  userId       String
+  orderId      String?
+  subject      String
+  category     String
+  priority     TicketPriority @default(MEDIUM)
+  status       TicketStatus   @default(OPEN)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order        Order?              @relation(fields: [orderId], references: [id])
+  messages     SupportMessage[]
+  attachments  SupportAttachment[]
+
+  @@index([userId])
+  @@index([ticketNumber])
+  @@index([status])
+}
+
+model SupportMessage {
+  id             String     @id @default(cuid())
+  ticketId       String
+  senderId       String
+  senderType     SenderType
+  message        String
+  attachmentUrl  String?
+  attachmentName String?
+  createdAt      DateTime   @default(now())
+
+  ticket         SupportTicket       @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender         User                @relation(fields: [senderId], references: [id])
+  attachments    SupportAttachment[]
+
+  @@index([ticketId])
+}
+
+model SupportAttachment {
+  id               String          @id @default(cuid())
+  ticketId         String
+  messageId        String?
+  uploadedByUserId String
+  publicId         String
+  resourceType     String          @default("image")
+  deliveryType     String          @default("authenticated")
+  format           String?
+  originalFilename String?
+  bytes            Int?
+  width            Int?
+  height           Int?
+  createdAt        DateTime        @default(now())
+
+  ticket           SupportTicket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  message          SupportMessage? @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  uploadedBy       User            @relation(fields: [uploadedByUserId], references: [id])
+
+  @@index([ticketId])
+  @@index([messageId])
+  @@index([uploadedByUserId])
+}
+
+// ----------------------------------------------------
+// DOWNLOAD ASSETS & ACCESS TOKENS
+// ----------------------------------------------------
+
+model DownloadAsset {
+  id        String   @id @default(cuid())
+  variantId String
+  fileName  String
+  filePath  String   // Local path or Object storage key
+  fileSize  Int
+  mimeType  String
+  createdAt DateTime @default(now())
+
+  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([variantId])
+}
+
+model DownloadAccess {
+  id           String    @id @default(cuid())
+  token        String    @unique
+  orderItemId  String
+  userId       String?
+  expiresAt    DateTime
+  downloadCount Int      @default(0)
+  maxDownloads Int       @default(5)
+  createdAt    DateTime  @default(now())
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@index([token])
+}
+
+// ----------------------------------------------------
+// REPLACEMENT SYSTEM ENUMS & MODELS
+// ----------------------------------------------------
+
+enum ReplacementMode {
+  AUTO
+  MANUAL_APPROVAL
+  DISABLED
+}
+
+enum ReplacementValidityType {
+  SUBSCRIPTION
+  WARRANTY
+  CUSTOM_DAYS
+}
+
+enum ReplacementStatus {
+  PENDING
+  WAITING_STOCK
+  PROCESSING
+  COMPLETED
+  REJECTED
+  FAILED
+  CANCELLED
+}
+
+enum ReplacementReason {
+  CANNOT_LOGIN
+  ACCOUNT_DISABLED
+  ACCESS_EXPIRED_EARLY
+  FEATURE_NOT_WORKING
+  OTHER
+}
+
+// ----------------------------------------------------
+// SITE SETTINGS & AUDIT LOGS
+// ----------------------------------------------------
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  category  String   @default("GENERAL")
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  action    String
+  entity    String
+  entityId  String?
+  before    String?  // JSON string
+  after     String?  // JSON string
+  ip        String?
+  userAgent String?
+  timestamp DateTime @default(now())
+
+  actor User @relation("ActorAuditLogs", fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([action])
+  @@index([entity])
+}
+
+model ReplacementRequest {
+  id                            String                  @id @default(cuid())
+  userId                        String
+  orderId                       String
+  orderItemId                   String
+  productId                     String
+  productVariantId              String
+
+  previousFulfillmentId         String?
+  previousInventoryItemId       String?
+
+  newFulfillmentId              String?
+  newInventoryItemId            String?
+
+  requestNumber                 String                  @unique // e.g. REP-260814-X8K9L
+  mode                          ReplacementMode         @default(AUTO)
+  status                        ReplacementStatus       @default(PENDING)
+
+  reason                        ReplacementReason?
+  customerNote                  String?
+  adminNote                     String?
+  idempotencyKey                String?                 @unique
+
+  requestedAt                   DateTime                @default(now())
+  processingStartedAt           DateTime?
+  processedAt                   DateTime?
+
+  nextEligibleAtAfterProcessing DateTime?
+
+  ipAddress                     String?
+  userAgent                     String?
+
+  replacementCostAmount        Int                     @default(0)
+  supplierId                    String?
+
+  createdAt                     DateTime                @default(now())
+  updatedAt                     DateTime                @updatedAt
+
+  user                          User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order                         Order                   @relation(fields: [orderId], references: [id])
+  orderItem                     OrderItem               @relation(fields: [orderItemId], references: [id])
+  product                       Product                 @relation(fields: [productId], references: [id])
+  variant                       ProductVariant          @relation(fields: [productVariantId], references: [id])
+  supplier                      Supplier?               @relation(fields: [supplierId], references: [id])
+
+  previousFulfillment           Fulfillment?            @relation("PreviousFulfillmentRelation", fields: [previousFulfillmentId], references: [id])
+  newFulfillment                Fulfillment?            @relation("NewFulfillmentRelation", fields: [newFulfillmentId], references: [id])
+
+  previousInventoryItem         InventoryItem?          @relation("PreviousInventoryRelation", fields: [previousInventoryItemId], references: [id])
+  newInventoryItem              InventoryItem?          @relation("NewInventoryRelation", fields: [newInventoryItemId], references: [id])
+
+  supplierWarrantyClaims SupplierWarrantyClaim[]
+  supplierClaimLinks     SupplierClaimReplacementLink[]
+
+  @@index([userId])
+  @@index([orderItemId])
+  @@index([status])
+  @@index([requestedAt])
+  @@index([productVariantId])
+  @@index([idempotencyKey])
+}
+
+// ----------------------------------------------------
+// LOYALTY COIN & REWARDS SYSTEM ENUMS & MODELS
+// ----------------------------------------------------
+
+enum CoinEarningMode {
+  USE_GLOBAL
+  CUSTOM
+  DISABLED
+}
+
+enum CoinRedemptionMode {
+  USE_GLOBAL
+  CUSTOM
+  DISABLED
+}
+
+enum CoinGrantStatus {
+  PENDING
+  AVAILABLE
+  RESERVED
+  USED
+  EXPIRED
+  REVERSED
+  CANCELLED
+}
+
+enum CoinReservationStatus {
+  ACTIVE
+  CONSUMED
+  RELEASED
+  EXPIRED
+}
+
+enum CoinLedgerType {
+  EARN
+  REDEEM
+  RESERVE
+  RELEASE
+  REFUND_RETURN
+  BONUS
+  ADJUSTMENT_ADD
+  ADJUSTMENT_DEDUCT
+  EXPIRE
+  REVERSAL
+}
+
+model CoinSettings {
+  id                            String   @id @default("default")
+  enabled                       Boolean  @default(true)
+  coinName                      String   @default("Store Coin")
+  currencyValuePerCoin          Int      @default(10) // 1 Coin = Rp10 (100 Coins = Rp1.000)
+  defaultRewardPercentage       Float    @default(2.0) // 2%
+  pendingPeriodDays             Int      @default(7)
+  expirationDays                Int      @default(365)
+  minimumRedemptionCoins        Int      @default(500)
+  maximumRedemptionPercentage   Int      @default(30) // 30%
+  allowCouponWithCoins          Boolean  @default(true)
+  allowFullCoinPaymentGlobally  Boolean  @default(false)
+  notifyBeforeExpirationDays    Int      @default(7)
+  coinEarningEnabled            Boolean  @default(true)
+  coinRedemptionEnabled         Boolean  @default(true)
+  returnedCoinMinimumValidityDays Int     @default(30)
+  updatedAt                     DateTime @updatedAt
+}
+
+model CoinGrant {
+  id               String          @id @default(cuid())
+  userId           String
+  sourceType       String          // ORDER_REWARD, BONUS, MANUAL_ADJUSTMENT, REFUND_RETURN
+  sourceId         String?
+  orderId          String?
+  coins            Int
+  coinsRemaining   Int
+  status           CoinGrantStatus @default(PENDING)
+  availableAt      DateTime        @default(now())
+  expiresAt        DateTime
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allocations      CoinRedemptionAllocation[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([availableAt])
+  @@index([expiresAt])
+  @@index([userId, status, availableAt, expiresAt])
+}
+
+model CoinReservation {
+  id             String                @id @default(cuid())
+  userId         String
+  orderId        String                @unique
+  requestedCoins Int
+  reservedCoins  Int
+  currencyValue  Int
+  status         CoinReservationStatus @default(ACTIVE)
+  expiresAt      DateTime
+  releasedAt     DateTime?
+  consumedAt     DateTime?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order          Order                 @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([orderId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model CoinRedemption {
+  id               String   @id @default(cuid())
+  userId           String
+  orderId          String   @unique
+  coinsUsed        Int
+  currencyValue    Int
+  coinValuePerUnit Int      @default(10)
+  createdAt        DateTime @default(now())
+
+  user             User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order            Order                      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  allocations      CoinRedemptionAllocation[]
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+model CoinRedemptionAllocation {
+  id           String         @id @default(cuid())
+  redemptionId String
+  grantId      String
+  coinsUsed    Int
+  createdAt    DateTime       @default(now())
+
+  redemption   CoinRedemption @relation(fields: [redemptionId], references: [id], onDelete: Cascade)
+  grant        CoinGrant      @relation(fields: [grantId], references: [id], onDelete: Cascade)
+
+  @@index([redemptionId])
+  @@index([grantId])
+}
+
+model CoinLedgerEntry {
+  id           String         @id @default(cuid())
+  userId       String
+  type         CoinLedgerType
+  amountCoins  Int
+  balanceAfter Int
+  sourceType   String
+  sourceId     String?
+  orderId      String?
+  description  String
+  availableAt  DateTime?
+  expiresAt    DateTime?
+  createdAt    DateTime       @default(now())
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([sourceType])
+  @@index([createdAt])
+}
+
+// ----------------------------------------------------
+// SHARED ACCOUNTS & FAMILY GROUPS
+// ----------------------------------------------------
+
+model SharedAccount {
+  id                   String              @id @default(cuid())
+  productVariantId     String
+  label                String              // e.g. ADB001
+  credentialEncrypted  String              @db.Text // Encrypted master credential
+  maxSlots             Int                 @default(2)
+  status               SharedAccountStatus @default(AVAILABLE)
+  masterExpiresAt      DateTime?
+  deliveryDeadlineAt   DateTime?
+  invalidatedAt        DateTime?
+  invalidationReason   String?             @db.Text
+
+  supplierId           String?
+  sourceType           InventorySourceType @default(INTERNAL)
+  acquisitionCost      Int                 @default(0)
+  costAllocationMode   CostAllocationMode  @default(EQUAL_PER_SLOT)
+  supplierReference    String?
+  purchasedAt          DateTime?
+
+  // Verification Access System (Per-Master Config)
+  verificationRequired     Boolean            @default(false)
+  verificationMethod       VerificationMethod @default(NONE)
+  verificationEmail        String?            // Secondary / Verification email
+  verificationAccessUrl    String?            @db.Text // External URL for EXTERNAL_INBOX_URL
+  verificationMailboxId    String?            // Linked Gogomi Mailbox ID
+  verificationProvider     String?            // NETFLIX, ADOBE, CANVA, SPOTIFY, CHATGPT, CLAUDE, OTHER
+  verificationInstructions String?            @db.Text
+
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  variant  ProductVariant      @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  supplier Supplier?           @relation(fields: [supplierId], references: [id])
+  slots    SharedAccountSlot[]
+
+  @@index([productVariantId])
+  @@index([status])
+  @@index([supplierId])
+  @@index([masterExpiresAt])
+}
+
+model SharedAccountSlot {
+  id                String           @id @default(cuid())
+  sharedAccountId   String
+  slotNumber        Int
+  slotLabel         String           // e.g. USER 1, PROFILE 1
+  status            SharedSlotStatus @default(AVAILABLE)
+  assignedUserId    String?
+  orderId           String?
+  orderItemId       String?
+  assignedAt        DateTime?
+  activatedAt       DateTime?
+  expiresAt         DateTime?
+  replacedAt        DateTime?
+  pinEncrypted      String?
+  metadataEncrypted String?          @db.Text
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  sharedAccount SharedAccount @relation(fields: [sharedAccountId], references: [id], onDelete: Cascade)
+  assignedUser  User?          @relation(fields: [assignedUserId], references: [id])
+  order         Order?         @relation(fields: [orderId], references: [id])
+  orderItem     OrderItem?     @relation(fields: [orderItemId], references: [id])
+  fulfillments  Fulfillment[]
+
+  @@unique([sharedAccountId, slotNumber])
+  @@index([sharedAccountId])
+  @@index([status])
+  @@index([assignedUserId])
+  @@index([orderItemId])
+}
+
+model FamilyGroup {
+  id                      String            @id @default(cuid())
+  productVariantId        String
+  groupReference          String            // e.g. FAM-ADB-001
+  ownerCredentialEncrypted String?           @db.Text
+  maxMembers              Int               @default(5)
+  status                  FamilyGroupStatus @default(AVAILABLE)
+  masterExpiresAt         DateTime?
+  invalidatedAt           DateTime?
+  invalidationReason      String?           @db.Text
+
+  supplierId              String?
+  sourceType              InventorySourceType @default(INTERNAL)
+  acquisitionCost         Int                 @default(0)
+  costAllocationMode      CostAllocationMode  @default(EQUAL_PER_SLOT)
+  supplierReference       String?
+  purchasedAt             DateTime?
+
+  // Verification Access System (Per-Family Config)
+  verificationRequired     Boolean            @default(false)
+  verificationMethod       VerificationMethod @default(NONE)
+  verificationEmail        String?            // Secondary / Verification email
+  verificationAccessUrl    String?            @db.Text // External URL for EXTERNAL_INBOX_URL
+  verificationMailboxId    String?            // Linked Gogomi Mailbox ID
+  verificationProvider     String?            // NETFLIX, ADOBE, CANVA, SPOTIFY, CHATGPT, CLAUDE, OTHER
+  verificationInstructions String?            @db.Text
+
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  variant  ProductVariant     @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  supplier Supplier?          @relation(fields: [supplierId], references: [id])
+  members  FamilyMemberSlot[]
+
+  @@index([productVariantId])
+  @@index([status])
+  @@index([supplierId])
+  @@index([masterExpiresAt])
+}
+
+model FamilyMemberSlot {
+  id                   String                 @id @default(cuid())
+  familyGroupId        String
+  slotNumber           Int
+  status               SharedSlotStatus       @default(AVAILABLE)
+  userId               String?
+  orderId              String?
+  orderItemId          String?
+  memberEmailEncrypted String?
+  invitationStatus     FamilyInvitationStatus @default(NOT_ASSIGNED)
+  invitedAt            DateTime?
+  acceptedAt           DateTime?
+  activatedAt          DateTime?
+  expiresAt            DateTime?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  familyGroup  FamilyGroup   @relation(fields: [familyGroupId], references: [id], onDelete: Cascade)
+  user         User?         @relation(fields: [userId], references: [id])
+  order        Order?        @relation(fields: [orderId], references: [id])
+  orderItem    OrderItem?    @relation(fields: [orderItemId], references: [id])
+  fulfillments Fulfillment[]
+
+  @@unique([familyGroupId, slotNumber])
+  @@index([familyGroupId])
+  @@index([status])
+  @@index([userId])
+  @@index([orderItemId])
+}
+
+enum FulfillmentJobStatus {
+  QUEUED
+  PROCESSING
+  RETRY_SCHEDULED
+  WAITING_STOCK
+  WAITING_MANUAL
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum JobPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum ErrorCategory {
+  RETRYABLE
+  WAITING_RESOURCE
+  MANUAL_REQUIRED
+  PERMANENT
+  SECURITY
+}
+
+enum ReservationType {
+  INVENTORY_RESERVATION
+  SHARED_SLOT_RESERVATION
+  FAMILY_SLOT_RESERVATION
+  COIN_RESERVATION
+}
+
+enum ReservationStatus {
+  ACTIVE
+  CONSUMED
+  RELEASED
+  EXPIRED
+  CANCELLED
+}
+
+enum InventoryHealthStatus {
+  HEALTHY
+  WARNING
+  EXPIRING_SOON
+  CRITICAL
+  INVALID
+  UNKNOWN
+}
+
+model FulfillmentJob {
+  id               String               @id @default(cuid())
+  orderId          String
+  orderItemId      String
+  userId           String?
+  deliveryModel    DeliveryModel
+  status           FulfillmentJobStatus @default(QUEUED)
+  priority         JobPriority          @default(NORMAL)
+  attemptCount     Int                  @default(0)
+  maxAttempts      Int                  @default(3)
+  nextAttemptAt    DateTime?
+  lastAttemptAt    DateTime?
+  lastErrorCode    String?
+  lastErrorMessage String?
+  lockedAt         DateTime?
+  lockedBy         String?
+  completedAt      DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  order     Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderItem OrderItem            @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  user      User?                @relation(fields: [userId], references: [id])
+  attempts  FulfillmentAttempt[]
+
+  @@unique([orderItemId, status])
+  @@index([orderId])
+  @@index([status, nextAttemptAt])
+  @@index([priority, createdAt])
+}
+
+model FulfillmentAttempt {
+  id                 String               @id @default(cuid())
+  jobId              String
+  attemptNumber      Int
+  status             FulfillmentJobStatus
+  errorCode          String?
+  errorCategory      ErrorCategory?
+  diagnosticSnapshot String?              // JSON diagnostic report
+  startedAt          DateTime             @default(now())
+  finishedAt         DateTime?
+  createdAt          DateTime             @default(now())
+
+  job FulfillmentJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([status])
+}
+
+model ResourceReservation {
+  id            String            @id @default(cuid())
+  type          ReservationType
+  userId        String?
+  orderId       String?
+  orderItemId   String?
+  resourceId    String            // InventoryItem ID / SharedSlot ID / FamilySlot ID / Coin ID
+  status        ReservationStatus @default(ACTIVE)
+  reservedAt    DateTime          @default(now())
+  expiresAt     DateTime
+  consumedAt    DateTime?
+  releasedAt    DateTime?
+  releaseReason String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  user      User?      @relation(fields: [userId], references: [id])
+  order     Order?     @relation(fields: [orderId], references: [id])
+  orderItem OrderItem? @relation(fields: [orderItemId], references: [id])
+
+  @@index([status, expiresAt])
+  @@index([orderId])
+  @@index([orderItemId])
+  @@index([resourceId])
+  @@index([userId])
+}
+
+// ----------------------------------------------------
+// PRIORITY 2 — BUSINESS OPERATIONS & NOTIFICATIONS
+// ----------------------------------------------------
+
+model Supplier {
+  id                   String                @id @default(cuid())
+  name                 String
+  code                 String                @unique // e.g. SUP-001
+  status               SupplierStatus        @default(ACTIVE)
+  contactName          String?
+  primaryContactMethod SupplierContactMethod @default(WHATSAPP)
+  email                String?
+  phone                String?
+  whatsapp             String?
+  telegram             String?
+  discord              String?
+  website              String?
+  marketplaceUrl       String?
+  notes                String?
+  defaultCurrency      String                @default("IDR")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  archivedAt           DateTime?
+
+  inventoryItems      InventoryItem[]
+  sharedAccounts      SharedAccount[]
+  familyGroups        FamilyGroup[]
+  batches             InventoryBatch[]
+  orderItems          OrderItem[]
+  replacementRequests ReplacementRequest[]
+  policies            SupplierWarrantyPolicy[]
+  claims              SupplierWarrantyClaim[]
+  incidents           InventoryFailureIncident[]
+  recoveries          SupplierRecovery[]
+
+  @@index([status])
+  @@index([name])
+}
+
+model SupplierWarrantyPolicy {
+  id                       String            @id @default(cuid())
+  supplierId               String
+  name                     String
+  warrantyDays             Int?
+  claimDeadlineDays        Int?
+  claimStartsFrom          WarrantyStartFrom @default(PURCHASE_DATE)
+  replacementAllowed       Boolean           @default(true)
+  refundAllowed            Boolean           @default(true)
+  partialRefundAllowed     Boolean           @default(true)
+  supplierCreditAllowed   Boolean           @default(true)
+  requiredEvidence         String?           // JSON array string
+  defaultClaimInstructions String?
+  claimMessageTemplate     String?
+  notes                    String?
+  status                   String            @default("ACTIVE")
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@index([supplierId])
+}
+
+model InventoryFailureIncident {
+  id                    String                 @id @default(cuid())
+  assetType             InventoryAssetType
+  assetId               String
+  failureReason         InventoryFailureReason
+  description           String?
+  detectedAt            DateTime               @default(now())
+  status                IncidentStatus         @default(OPEN)
+  causedBy              String                 @default("SUPPLIER") // SUPPLIER | CUSTOMER | INTERNAL
+  supplierId            String?
+  supplierClaimEligible Boolean                @default(true)
+  createdAt             DateTime               @default(now())
+  resolvedAt            DateTime?
+
+  supplier Supplier?              @relation(fields: [supplierId], references: [id])
+  claims   SupplierWarrantyClaim[]
+
+  @@index([assetType, assetId])
+  @@index([supplierId])
+  @@index([status])
+}
+
+model SupplierWarrantyClaim {
+  id                           String                      @id @default(cuid())
+  claimNumber                  String                      @unique // SC-20260815-0001
+  supplierId                   String
+  sourceType                   ClaimSourceType             @default(CUSTOMER_REPLACEMENT)
+  assetType                    InventoryAssetType
+  assetId                      String
+  incidentId                   String?
+  relatedReplacementId         String?
+  status                       SupplierWarrantyClaimStatus @default(DRAFT)
+  failureReason                InventoryFailureReason
+  failureDescription           String?
+  warrantyEligibility          Boolean                     @default(true)
+  ineligibilityReason          WarrantyIneligibilityReason?
+  warrantyEndsAt               DateTime?
+  claimDeadlineAt              DateTime?
+  claimValue                   Int                         @default(0)
+  submittedAt                  DateTime?
+  submissionChannel            SupplierContactMethod?
+  supplierClaimReference       String?
+  waitingSince                 DateTime?
+  resolutionType               SupplierClaimResolutionType?
+  resolutionAmount             Int?
+  supplierResponseReference    String?
+  approvedAt                   DateTime?
+  rejectedAt                   DateTime?
+  resolvedAt                   DateTime?
+  closedAt                     DateTime?
+  internalNotes                String?
+  supplierNameSnapshot         String?
+  warrantyPolicyNameSnapshot   String?
+  warrantyDaysSnapshot         Int?
+  claimDeadlineSnapshot        Int?
+  claimValueSnapshot           Int?
+  createdBy                    String?
+  updatedBy                    String?
+  createdAt                    DateTime                    @default(now())
+  updatedAt                    DateTime                    @updatedAt
+
+  supplier         Supplier                       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  incident         InventoryFailureIncident?      @relation(fields: [incidentId], references: [id])
+  replacementLink  ReplacementRequest?            @relation(fields: [relatedReplacementId], references: [id])
+  responses        SupplierClaimResponse[]
+  evidences        SupplierClaimEvidence[]
+  recoveries       SupplierRecovery[]
+  replacementLinks SupplierClaimReplacementLink[]
+
+  @@index([supplierId, status])
+  @@index([status, claimDeadlineAt])
+  @@index([assetType, assetId])
+  @@index([claimNumber])
+  @@index([createdAt])
+}
+
+model SupplierClaimReplacementLink {
+  id            String   @id @default(cuid())
+  claimId       String
+  replacementId String
+  createdAt     DateTime @default(now())
+
+  claim       SupplierWarrantyClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  replacement ReplacementRequest    @relation(fields: [replacementId], references: [id], onDelete: Cascade)
+
+  @@unique([claimId, replacementId])
+  @@index([claimId])
+  @@index([replacementId])
+}
+
+model SupplierClaimResponse {
+  id                 String                    @id @default(cuid())
+  claimId            String
+  responseType       SupplierClaimResponseType
+  messageSummary     String
+  externalReference  String?
+  respondedAt        DateTime                  @default(now())
+  recordedBy         String?
+  createdAt          DateTime                  @default(now())
+
+  claim SupplierWarrantyClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+model SupplierClaimEvidence {
+  id               String   @id @default(cuid())
+  claimId          String
+  type             String   // SCREENSHOT | VIDEO | INVOICE | CHAT | ERROR_LOG | OTHER
+  fileReference    String
+  originalFilename String?
+  description      String?
+  uploadedBy       String?
+  createdAt        DateTime @default(now())
+
+  claim SupplierWarrantyClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+model SupplierRecovery {
+  id                     String               @id @default(cuid())
+  claimId                String
+  supplierId             String
+  type                   SupplierRecoveryType
+  amount                 Int                  @default(0)
+  inventoryId            String?
+  replacementInventoryId String?
+  reference              String?
+  recognizedAt           DateTime             @default(now())
+  createdBy              String?
+  createdAt              DateTime             @default(now())
+
+  claim    SupplierWarrantyClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  supplier Supplier              @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+  @@index([supplierId])
+}
+
+model InventoryBatch {
+  id                       String              @id @default(cuid())
+  batchNumber              String              @unique // e.g. BATCH-20260815-001
+  supplierId               String?
+  sourceType               InventorySourceType @default(SUPPLIER)
+  productVariantId         String
+  quantity                 Int                 @default(0)
+  totalCost                Int                 @default(0)
+  unitCost                 Int                 @default(0)
+  purchasedAt              DateTime            @default(now())
+  supplierInvoiceReference String?
+  notes                    String?
+  createdBy                String?
+  createdAt                DateTime            @default(now())
+
+  supplier Supplier?       @relation(fields: [supplierId], references: [id])
+  variant  ProductVariant  @relation(fields: [productVariantId], references: [id])
+  items    InventoryItem[]
+
+  @@index([supplierId])
+  @@index([productVariantId])
+}
+
+model OrderFinancialSnapshot {
+  id                     String   @id @default(cuid())
+  orderId                String   @unique
+  subtotal               Int      @default(0)
+  productDiscount        Int      @default(0)
+  couponDiscount         Int      @default(0)
+  coinDiscount           Int      @default(0)
+  cashPayableAmount      Int      @default(0)
+  coinUsed               Int      @default(0)
+  paymentFee             Int      @default(0)
+  grossRevenue           Int      @default(0)
+  recognizedCOGS         Int      @default(0)
+  replacementCost        Int      @default(0)
+  grossProfit            Int      @default(0)
+  grossMargin            Float    @default(0)
+  isCostUnknown          Boolean  @default(false)
+  costCoveragePercentage Float    @default(100.0)
+  createdAt              DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+model AdminNotification {
+  id          String                    @id @default(cuid())
+  type        String
+  category    AdminNotificationCategory
+  severity    NotificationSeverity      @default(INFO)
+  title       String
+  message     String
+  entityType  String?
+  entityId    String?
+  actionUrl   String?
+  dedupeKey   String?                   @unique
+  metadata    String?                   // JSON metadata string
+  resolvedAt  DateTime?
+  createdAt   DateTime                  @default(now())
+  expiresAt   DateTime?
+
+  recipients AdminNotificationRecipient[]
+
+  @@index([severity, createdAt])
+  @@index([category])
+  @@index([dedupeKey])
+}
+
+model AdminNotificationRecipient {
+  id             String    @id @default(cuid())
+  notificationId String
+  userId         String
+  readAt         DateTime?
+  dismissedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  notification AdminNotification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, userId])
+  @@index([userId, readAt, dismissedAt])
+  @@index([userId, readAt])
+}
+
+model TelegramNotificationLog {
+  id           String    @id @default(cuid())
+  eventType    String
+  entityType   String?
+  entityId     String?
+  dedupeKey    String?   @unique
+  chatId       String?
+  status       String    // SUCCESS, FAILED, SKIPPED
+  attempts     Int       @default(1)
+  sentAt       DateTime?
+  errorCode    String?
+  errorMessage String?
+  createdAt    DateTime  @default(now())
+
+  @@index([eventType])
+  @@index([dedupeKey])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model CustomerNotification {
+  id         String                       @id @default(cuid())
+  userId     String
+  type       String
+  category   CustomerNotificationCategory
+  title      String
+  message    String
+  entityType String?
+  entityId   String?
+  actionUrl  String?
+  dedupeKey  String?
+  metadata   String?                      // JSON string
+  readAt     DateTime?
+  dismissedAt DateTime?
+  createdAt  DateTime                     @default(now())
+  expiresAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, dismissedAt])
+  @@index([userId, readAt])
+  @@index([userId, createdAt])
+  @@index([dedupeKey])
+}
+
+enum EmailJobStatus {
+  QUEUED
+  PROCESSING
+  SENT
+  RETRY_SCHEDULED
+  FAILED
+  CANCELLED
+  DEV_CAPTURED
+}
+
+model EmailJob {
+  id                     String         @id @default(cuid())
+  recipientUserId        String?
+  recipientEmail         String
+  originalRecipientEmail String?
+  eventType              String
+  category               String         // TRANSACTIONAL, SECURITY, OPERATIONAL_ADMIN, REMINDER, LOYALTY, SUPPORT, MARKETING
+  templateKey            String
+  entityType             String?
+  entityId               String?
+  status                 EmailJobStatus @default(QUEUED)
+  priority               JobPriority    @default(NORMAL)
+  subjectSnapshot        String
+  templateData           String?        @db.Text // JSON metadata
+  attemptCount           Int            @default(0)
+  maxAttempts            Int            @default(5)
+  nextAttemptAt          DateTime?
+  lastAttemptAt          DateTime?
+  lockedAt               DateTime?
+  lockedBy               String?
+  providerMessageId      String?
+  lastErrorCode          String?
+  lastErrorMessageSafe   String?        @db.Text
+  queuedAt               DateTime       @default(now())
+  sentAt                 DateTime?
+  failedAt               DateTime?
+  cancelledAt            DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  dedupeKey              String?        @unique
+
+  user User? @relation(fields: [recipientUserId], references: [id], onDelete: SetNull)
+
+  @@index([status, nextAttemptAt])
+  @@index([priority, createdAt])
+  @@index([recipientEmail])
+  @@index([recipientUserId])
+  @@index([dedupeKey])
+}
+
+model CustomerNotificationPreference {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  emailOrderUpdates  Boolean  @default(true)
+  emailReplacements Boolean  @default(true)
+  emailCoins         Boolean  @default(true)
+  emailPromotions    Boolean  @default(false)
+  emailSubscriptions Boolean  @default(true)
+  emailWaitlist      Boolean  @default(true)
+  emailPriceAlerts   Boolean  @default(true)
+  emailReferrals     Boolean  @default(true)
+  emailSupport       Boolean  @default(true)
+
+  inAppOrderUpdates  Boolean  @default(true)
+  inAppProductUpdates Boolean @default(true)
+  inAppReplacements  Boolean  @default(true)
+  inAppSubscriptions Boolean  @default(true)
+  inAppRenewals      Boolean  @default(true)
+  inAppWaitlist      Boolean  @default(true)
+  inAppPriceAlerts   Boolean  @default(true)
+  inAppReferrals     Boolean  @default(true)
+  inAppSupport       Boolean  @default(true)
+  inAppSecurity      Boolean  @default(true)
+  inAppCoins         Boolean  @default(true)
+  inAppPromotions    Boolean  @default(true)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GlobalEmailSettings {
+  id             String   @id @default("default")
+  mode           String   @default("development") // disabled, development, production
+  sendEnabled    Boolean  @default(false)
+  devStrategy    String   @default("capture")     // capture, redirect, smtp
+  devRedirectTo  String?
+  fromName       String   @default("Gogomi Store")
+  fromAddress    String   @default("no-reply@gogomi.store")
+  replyTo        String   @default("support@gogomi.store")
+  retentionDays  Int      @default(365)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model AdminNotificationPreference {
+  id           String               @id @default(cuid())
+  userId       String               @unique
+  categories   String?              // JSON array of subscribed categories
+  minSeverity  NotificationSeverity @default(INFO)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GlobalBusinessSettings {
+  id                              String         @id @default("default")
+  minimumMarginPercentage         Float          @default(15.0)
+  marginProtectionEnabled         Boolean        @default(false)
+  supplierWarningReplacementRate  Float          @default(15.0)
+  supplierCriticalReplacementRate Float          @default(30.0)
+  supplierWarningExpirationRate   Float          @default(10.0)
+  notificationRetentionDays       Int            @default(365)
+  paymentFeeMode                  PaymentFeeMode @default(NONE)
+  paymentFeeValue                 Float          @default(0.0)
+  createdAt                       DateTime       @default(now())
+  updatedAt                       DateTime       @updatedAt
+}
+
+// ----------------------------------------------------
+// PRIORITY 3 — CUSTOMER RETENTION & GROWTH SYSTEM
+// ----------------------------------------------------
+
+model ProductWaitlist {
+  id               String         @id @default(cuid())
+  userId           String?
+  email            String
+  productId        String
+  productVariantId String
+  status           WaitlistStatus @default(ACTIVE)
+  source           String         @default("STOREFRONT")
+  notifiedAt       DateTime?
+  convertedAt      DateTime?
+  convertedOrderId String?
+  unsubscribedAt   DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  user    User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+
+  @@index([productVariantId, status])
+  @@index([userId, status])
+  @@index([email, productVariantId])
+  @@index([createdAt])
+}
+
+model ReferralProgramSettings {
+  id                            String   @id @default("default")
+  enabled                       Boolean  @default(true)
+  attributionWindowDays         Int      @default(30)
+  minimumCashPurchaseAmount     Int      @default(50000) // Rp50.000 cash spend minimum
+  referrerRewardCoins           Int      @default(500)   // 500 coins for referrer
+  newCustomerRewardCoins        Int      @default(200)   // 200 coins for welcome bonus
+  rewardHoldDays                Int      @default(7)     // 7 days hold period
+  maxReferralRewardsPerMonth    Int?     @default(10)
+  coinOnlyOrderQualifies        Boolean  @default(false)
+  createdAt                     DateTime @default(now())
+  updatedAt                     DateTime @updatedAt
+}
+
+model ReferralReward {
+  id                     String         @id @default(cuid())
+  referrerUserId         String
+  referredUserId         String
+  qualifyingOrderId      String         @unique
+  referrerCoinGrantId    String?
+  newCustomerCoinGrantId String?
+  status                 ReferralStatus @default(PENDING)
+  referrerCoins          Int            @default(500)
+  newCustomerCoins       Int            @default(200)
+  holdExpiresAt          DateTime
+  flaggedForReview       Boolean        @default(false)
+  flagReason             String?
+  reviewedAt             DateTime?
+  reviewedBy             String?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  referrer User               @relation("ReferrerRewards", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referred User               @relation("ReferredRewards", fields: [referredUserId], references: [id], onDelete: Cascade)
+  riskFlags ReferralRiskFlag[]
+
+  @@index([referrerUserId])
+  @@index([referredUserId])
+  @@index([status])
+  @@index([holdExpiresAt])
+}
+
+model ReferralRiskFlag {
+  id               String             @id @default(cuid())
+  referralRewardId String
+  userId           String
+  reason           ReferralRiskReason
+  riskScore        Int                @default(50)
+  metadata         String?            // JSON string
+  resolvedAt       DateTime?
+  createdAt        DateTime           @default(now())
+
+  referralReward ReferralReward @relation(fields: [referralRewardId], references: [id], onDelete: Cascade)
+
+  @@index([referralRewardId])
+  @@index([userId])
+}
+
+// ----------------------------------------------------
+// PRIORITY 4 — CUSTOMER LOYALTY, PERSONALIZATION & CONVERSION
+// ----------------------------------------------------
+
+enum TierStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TierDowngradePolicy {
+  NEVER
+  IMMEDIATE
+  NEXT_REVIEW
+}
+
+enum PriceWatchStatus {
+  ACTIVE
+  TRIGGERED
+  PAUSED
+  CANCELLED
+}
+
+enum OfferStatus {
+  ACTIVE
+  INACTIVE
+  SCHEDULED
+  EXPIRED
+}
+
+enum OfferType {
+  DISCOUNT
+  BONUS_COIN
+  RENEWAL_DISCOUNT
+  EXCLUSIVE_ACCESS
+}
+
+enum OfferTargetType {
+  ALL_CUSTOMERS
+  LOYALTY_TIER
+  SPECIFIC_CUSTOMERS
+  RETURNING_CUSTOMERS
+  FIRST_PURCHASE
+  RENEWAL
+}
+
+enum MilestoneTriggerType {
+  COMPLETED_ORDER_COUNT
+  LIFETIME_SPEND
+  REFERRAL_COUNT
+  RENEWAL_COUNT
+}
+
+enum MilestoneRewardType {
+  BONUS_COIN
+  COUPON
+  BADGE
+}
+
+model LoyaltyTier {
+  id                                    String              @id @default(cuid())
+  name                                  String
+  slug                                  String              @unique
+  rank                                  Int                 @default(1) // 1=Bronze, 2=Silver, 3=Gold, 4=Platinum
+  status                                TierStatus          @default(ACTIVE)
+  minimumSpend                          Int                 @default(0) // Minimum lifetime spend in IDR
+  minimumCompletedOrders                Int?                @default(0)
+  coinRewardMultiplier                  Float               @default(1.0)
+  maxCoinRedemptionPercentageOverride   Int?                // e.g. 40% override
+  renewalDiscountPercentage             Float?              @default(0)   // e.g. 5% renewal discount
+  prioritySupportEnabled                Boolean             @default(false)
+  replacementCooldownMultiplier         Float?              @default(1.0)
+  earlyRestockMinutes                   Int?                @default(0)
+  exclusiveAccessEnabled                Boolean             @default(false)
+  badgeLabel                            String?             @default("Bronze Member")
+  description                           String?
+  createdAt                             DateTime            @default(now())
+  updatedAt                             DateTime            @updatedAt
+
+  customerLoyaltyTiers                  CustomerLoyaltyTier[]
+  customerOffers                        CustomerOffer[]
+
+  @@index([rank])
+  @@index([status])
+}
+
+model CustomerLoyaltyTier {
+  id               String       @id @default(cuid())
+  userId           String       @unique
+  tierId           String
+  qualifiedSpend   Int          @default(0)
+  completedOrders  Int          @default(0)
+  assignedAt       DateTime     @default(now())
+  lastEvaluatedAt  DateTime     @default(now())
+  nextReviewAt     DateTime?
+  previousTierId   String?
+  upgradeReason    String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier LoyaltyTier  @relation(fields: [tierId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tierId])
+}
+
+model CustomerLoyaltyTierHistory {
+  id                     String   @id @default(cuid())
+  userId                 String
+  fromTierId             String?
+  toTierId               String
+  reason                 String?
+  qualifiedSpendSnapshot Int      @default(0)
+  changedAt              DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([changedAt])
+}
+
+model WishlistItem {
+  id               String   @id @default(cuid())
+  userId           String
+  productId        String
+  productVariantId String?
+  priceAtAdded     Int?
+  createdAt        DateTime @default(now())
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, productId, productVariantId])
+  @@index([userId, createdAt])
+  @@index([productId])
+}
+
+model RecentlyViewedProduct {
+  id               String   @id @default(cuid())
+  userId           String
+  productId        String
+  productVariantId String?
+  viewedAt         DateTime @default(now())
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, productId])
+  @@index([userId, viewedAt])
+}
+
+model PriceWatch {
+  id                String           @id @default(cuid())
+  userId            String
+  productId         String
+  productVariantId  String
+  referencePrice    Int
+  targetPrice       Int?
+  status            PriceWatchStatus @default(ACTIVE)
+  lastNotifiedPrice Int?
+  lastNotifiedAt    DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+
+  @@index([productVariantId, status])
+  @@index([userId, status])
+}
+
+model CustomerOffer {
+  id                   String          @id @default(cuid())
+  name                 String
+  description          String?
+  status               OfferStatus     @default(ACTIVE)
+  offerType            OfferType       @default(DISCOUNT)
+  discountType         String          @default("PERCENTAGE") // PERCENTAGE or FIXED
+  discountValue        Float           @default(0)
+  targetType           OfferTargetType @default(ALL_CUSTOMERS)
+  targetTierId         String?
+  productId            String?
+  productVariantId     String?
+  startAt              DateTime?
+  endAt                DateTime?
+  usageLimit           Int?
+  perUserLimit         Int?            @default(1)
+  stackableWithCoupon  Boolean         @default(false)
+  stackableWithCoin    Boolean         @default(true)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  targetTier LoyaltyTier?     @relation(fields: [targetTierId], references: [id], onDelete: SetNull)
+  product    Product?         @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant    ProductVariant?  @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+
+  @@index([status, startAt, endAt])
+  @@index([targetTierId])
+}
+
+model LoyaltyMilestone {
+  id               String               @id @default(cuid())
+  name             String
+  triggerType      MilestoneTriggerType
+  triggerValue     Int
+  rewardType       MilestoneRewardType  @default(BONUS_COIN)
+  rewardValue      Int
+  status           TierStatus           @default(ACTIVE)
+  oncePerCustomer  Boolean              @default(true)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  customerRewards  CustomerMilestoneReward[]
+
+  @@index([triggerType, status])
+}
+
+model CustomerMilestoneReward {
+  id           String              @id @default(cuid())
+  userId       String
+  milestoneId  String
+  rewardType   MilestoneRewardType
+  rewardValue  Int
+  coinGrantId  String?
+  issuedAt     DateTime            @default(now())
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestone LoyaltyMilestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, milestoneId])
+  @@index([userId])
+}
+
+// ----------------------------------------------------
+// VERIFICATION ACCESS & AUTOMATIC CODE SYSTEM
+// ----------------------------------------------------
+
+enum VerificationMethod {
+  NONE
+  EXTERNAL_INBOX_URL
+  GOGOMI_MAIL
+  MANUAL
+}
+
+enum VerificationRequestStatus {
+  WAITING
+  PROCESSING
+  FOUND
+  NEEDS_REVIEW
+  NOT_FOUND
+  EXPIRED
+  FAILED
+  CANCELLED
+}
+
+enum VerificationCodeEventStatus {
+  RECEIVED
+  UNCLAIMED
+  CLAIMED
+  EXPIRED
+  AMBIGUOUS
+  IGNORED
+}
+
+model Mailbox {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  status         String    @default("ACTIVE")
+  provider       String?   @default("TMAIL")
+  lastWebhookAt  DateTime?
+  lastReceivedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status])
+}
+
+model VerificationProviderRule {
+  id                    String   @id @default(cuid())
+  providerName          String   @unique // NETFLIX, ADOBE, CANVA, SPOTIFY, CHATGPT, CLAUDE, OTHER, GENERIC
+  enabled               Boolean  @default(true)
+  allowedSenders        Json?
+  subjectPatterns       Json?
+  bodyKeywords          Json?
+  codeType              String   @default("NUMERIC") // NUMERIC, ALPHANUMERIC, CUSTOM_PATTERN
+  allowedCodeLengths    Json?
+  codeTtlMinutes        Int      @default(15)
+  recentLookbackMinutes Int      @default(5)
+  confidenceThreshold   String   @default("HIGH")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([enabled])
+}
+
+model VerificationRequest {
+  id               String                    @id @default(cuid())
+  userId           String
+  orderItemId      String
+  inventoryItemId String?
+  sharedAccountId  String?
+  familyGroupId    String?
+  mailboxId        String?
+  provider         String                    @default("GENERIC")
+  status           VerificationRequestStatus @default(WAITING)
+  requestedAt      DateTime                  @default(now())
+  expiresAt        DateTime
+  fulfilledAt      DateTime?
+  codeEventId      String?
+  codeFound        String?                   // Encrypted at rest
+  reason           String?
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([orderItemId])
+  @@index([sharedAccountId])
+  @@index([familyGroupId])
+  @@index([inventoryItemId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model VerificationCodeEvent {
+  id                 String                      @id @default(cuid())
+  mailboxId          String?
+  provider           String                      @default("GENERIC")
+  sender             String
+  subject            String
+  codeEncrypted      String
+  receivedAt         DateTime                    @default(now())
+  expiresAt          DateTime
+  confidence         String                      @default("HIGH")
+  status             VerificationCodeEventStatus @default(UNCLAIMED)
+  claimedByRequestId String?
+  claimedAt          DateTime?
+  messageIdHash      String?                     @unique
+
+  @@index([mailboxId])
+  @@index([provider])
+  @@index([status])
+  @@index([receivedAt])
+  @@index([expiresAt])
+}
+
+
+

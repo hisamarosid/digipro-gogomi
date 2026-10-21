@@ -1,0 +1,734 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 6% 10%;
+    /* #18181B Charcoal Gray */
+    --foreground: 0 0% 98%;
+    /* #FAFAFA */
+
+    --card: 240 6% 13%;
+    /* #202024 Main Card */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 4% 18%;
+    /* #2D2D31 Elevated / Modal */
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 217 91% 60%;
+    /* #3B82F6 Clean Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 4% 16%;
+    /* #27272A70 Secondary Surface */
+    --secondary-foreground: 240 5% 84%;
+    /* #D4D4D8 */
+
+    --muted: 240 4% 16%;
+    /* #27272A70 */
+    --muted-foreground: 240 5% 65%;
+    /* #A1A1AA */
+
+    --accent: 187 85% 53%;
+    /* #22D3EE Cyan Accent */
+    --accent-foreground: 240 6% 10%;
+
+    --destructive: 0 84% 60%;
+    /* #EF4444 Danger */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 4% 26%;
+    /* #3F3F46 Border */
+    --input: 240 4% 16%;
+    /* #27272A70 Input */
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+  }
+
+  html.light {
+    --background: 216 33% 98%;
+    /* #F7F9FC Soft White */
+    --foreground: 222 47% 11%;
+    /* #0F172A */
+
+    --card: 0 0% 100%;
+    /* #FFFFFF Main Card */
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    /* #FFFFFF */
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 221 83% 53%;
+    /* #2563EB Light Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 214 32% 95%;
+    /* #EEF2F7 */
+    --secondary-foreground: 215 25% 27%;
+    /* #334155 */
+
+    --muted: 214 32% 95%;
+    /* #EEF2F7 */
+    --muted-foreground: 215 16% 47%;
+    /* #64748B */
+
+    --accent: 189 94% 43%;
+    /* #06B6D4 Cyan */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    /* #E2E8F0 */
+    --input: 0 0% 100%;
+    /* #FFFFFF */
+    --ring: 221 83% 53%;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: rgba(32, 32, 36, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid #3F3F46;
+  }
+
+  .modal-backdrop {
+    background-color: rgba(2, 6, 23, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #3B82F6 0%, #22D3EE 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .brand-gradient {
+    background: linear-gradient(135deg, #3B82F6 0%, #22D3EE 100%);
+  }
+}
+
+body {
+  background-color: #18181B;
+  color: #FAFAFA;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #18181B;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3F3F46;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525B;
+}
+
+/* ==========================================================================
+   DARK MODE — PREMIUM CHARCOAL GRAY PALETTE (#18181B, #202024, #27272A70)
+   ========================================================================== */
+
+html.dark body,
+body:not(.light) {
+  background-color: #18181B !important;
+  color: #D4D4D8 !important;
+}
+
+/* Background Color Mappings for Charcoal Palette in Dark Mode */
+html:not(.light) .bg-slate-950,
+html:not(.light) .bg-zinc-950,
+html:not(.light) .bg-black,
+html.dark .bg-slate-950,
+html.dark .bg-zinc-950,
+html.dark .bg-black {
+  background-color: #18181B !important;
+}
+
+html:not(.light) .bg-slate-900,
+html:not(.light) .bg-zinc-900,
+html.dark .bg-slate-900,
+html.dark .bg-zinc-900 {
+  background-color: #202024 !important;
+}
+
+html:not(.light) .bg-slate-900\/60,
+html:not(.light) .bg-slate-900\/40,
+html:not(.light) .bg-slate-900\/80,
+html:not(.light) .bg-slate-900\/50,
+html:not(.light) .bg-slate-900\/90,
+html:not(.light) .bg-slate-900\/95,
+html:not(.light) .bg-slate-900\/98,
+html:not(.light) .bg-slate-950\/80,
+html:not(.light) .bg-slate-950\/60,
+html:not(.light) .bg-slate-950\/40,
+html:not(.light) .bg-slate-950\/90,
+html:not(.light) .bg-slate-950\/95,
+html.dark .bg-slate-900\/60,
+html.dark .bg-slate-900\/40,
+html.dark .bg-slate-900\/80,
+html.dark .bg-slate-900\/50,
+html.dark .bg-slate-900\/90,
+html.dark .bg-slate-900\/95,
+html.dark .bg-slate-900\/98,
+html.dark .bg-slate-950\/80,
+html.dark .bg-slate-950\/60,
+html.dark .bg-slate-950\/40,
+html.dark .bg-slate-950\/90,
+html.dark .bg-slate-950\/95 {
+  background-color: #27272A70 !important;
+}
+
+html:not(.light) .bg-slate-800,
+html:not(.light) .bg-zinc-800,
+html.dark .bg-slate-800,
+html.dark .bg-zinc-800 {
+  background-color: #27272A70 !important;
+  color: #FAFAFA !important;
+}
+
+html:not(.light) .bg-slate-800:hover,
+html:not(.light) .bg-zinc-800:hover,
+html.dark .bg-slate-800:hover,
+html.dark .bg-zinc-800:hover {
+  background-color: #2D2D31 !important;
+}
+
+/* Border Color Mappings in Dark Mode */
+html:not(.light) .border-slate-800,
+html:not(.light) .border-slate-800\/80,
+html:not(.light) .border-slate-800\/60,
+html:not(.light) .border-slate-800\/90,
+html:not(.light) .border-slate-900,
+html:not(.light) .border-zinc-800,
+html.dark .border-slate-800,
+html.dark .border-slate-800\/80,
+html.dark .border-slate-800\/60,
+html.dark .border-slate-800\/90,
+html.dark .border-slate-900,
+html.dark .border-zinc-800 {
+  border-color: #3F3F46 !important;
+}
+
+html:not(.light) .border-slate-700,
+html:not(.light) .border-slate-700\/50,
+html:not(.light) .border-zinc-700,
+html.dark .border-slate-700,
+html.dark .border-slate-700\/50,
+html.dark .border-zinc-700 {
+  border-color: #52525B !important;
+}
+
+/* Typography Color Mappings in Dark Mode */
+html:not(.light) .text-white,
+html.dark .text-white {
+  color: #FAFAFA !important;
+}
+
+html:not(.light) .text-slate-100,
+html:not(.light) .text-slate-200,
+html:not(.light) .text-slate-300,
+html.dark .text-slate-100,
+html.dark .text-slate-200,
+html.dark .text-slate-300 {
+  color: #D4D4D8 !important;
+}
+
+html:not(.light) .text-slate-400,
+html.dark .text-slate-400 {
+  color: #A1A1AA !important;
+}
+
+html:not(.light) .text-slate-500,
+html:not(.light) .text-slate-600,
+html.dark .text-slate-500,
+html.dark .text-slate-600 {
+  color: #71717A !important;
+}
+
+/* PRIMARY BLUE BUTTONS (Clean Blue Action Buttons) */
+.bg-blue-600,
+.bg-blue-500 {
+  background-color: #3B82F6 !important;
+  color: #FFFFFF !important;
+}
+
+.bg-blue-600:hover,
+.bg-blue-500:hover {
+  background-color: #60A5FA !important;
+  color: #FFFFFF !important;
+}
+
+/* Transform former emerald green CTAs to Primary Clean Blue */
+.bg-emerald-500,
+.bg-emerald-400 {
+  background-color: #3B82F6 !important;
+  color: #FFFFFF !important;
+}
+
+/* Hide scrollbar for Chrome, Safari, Opera, Edge, Firefox */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.bg-emerald-500:hover,
+.bg-emerald-400:hover {
+  background-color: #60A5FA !important;
+  color: #FFFFFF !important;
+}
+
+/* Form Inputs, Textareas & Select Dropdowns in Dark Mode */
+html:not(.light) input[type="text"],
+html:not(.light) input[type="email"],
+html:not(.light) input[type="password"],
+html:not(.light) input[type="number"],
+html:not(.light) textarea,
+html:not(.light) select {
+  background-color: #27272A70 !important;
+  border-color: #3F3F46 !important;
+  color: #FAFAFA !important;
+}
+
+html:not(.light) input::placeholder,
+html:not(.light) textarea::placeholder {
+  color: #71717A !important;
+}
+
+html:not(.light) select option {
+  background-color: #202024 !important;
+  color: #FAFAFA !important;
+}
+
+/* Focus Ring in Dark Mode */
+html:not(.light) input:focus,
+html:not(.light) textarea:focus,
+html:not(.light) select:focus {
+  border-color: #3B82F6 !important;
+  outline: none !important;
+}
+
+/* Semantic Badges in Dark Mode */
+html:not(.light) .text-cyan-400,
+html:not(.light) .text-cyan-300,
+html.dark .text-cyan-400,
+html.dark .text-cyan-300 {
+  color: #22D3EE !important;
+}
+
+html:not(.light) .bg-cyan-500\/10,
+html:not(.light) .bg-cyan-500\/20,
+html.dark .bg-cyan-500\/10,
+html.dark .bg-cyan-500\/20 {
+  background-color: rgba(34, 211, 238, 0.10) !important;
+  border-color: rgba(34, 211, 238, 0.20) !important;
+}
+
+/* Success Green Badge */
+html:not(.light) .text-emerald-400,
+html:not(.light) .text-emerald-300,
+html.dark .text-emerald-400,
+html.dark .text-emerald-300 {
+  color: #4ADE80 !important;
+}
+
+html:not(.light) .bg-emerald-500\/10,
+html:not(.light) .bg-emerald-500\/20,
+html.dark .bg-emerald-500\/10,
+html.dark .bg-emerald-500\/20 {
+  background-color: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.20) !important;
+}
+
+/* Warning Amber Badge */
+html:not(.light) .text-amber-400,
+html:not(.light) .text-amber-300,
+html.dark .text-amber-400,
+html.dark .text-amber-300 {
+  color: #FBBF24 !important;
+}
+
+html:not(.light) .bg-amber-500\/10,
+html:not(.light) .bg-amber-500\/20,
+html.dark .bg-amber-500\/10,
+html.dark .bg-amber-500\/20 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.20) !important;
+}
+
+/* Danger Red Badge */
+html:not(.light) .text-rose-400,
+html:not(.light) .text-rose-300,
+html.dark .text-rose-400,
+html.dark .text-rose-300 {
+  color: #F87171 !important;
+}
+
+html:not(.light) .bg-rose-500\/10,
+html:not(.light) .bg-rose-500\/20,
+html.dark .bg-rose-500\/10,
+html.dark .bg-rose-500\/20 {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.20) !important;
+}
+
+/* Info Blue Badge & Links */
+html:not(.light) .text-blue-400,
+html:not(.light) .text-blue-300,
+html.dark .text-blue-400,
+html.dark .text-blue-300 {
+  color: #60A5FA !important;
+}
+
+html:not(.light) .bg-blue-500\/10,
+html:not(.light) .bg-blue-500\/20,
+html.dark .bg-blue-500\/10,
+html.dark .bg-blue-500\/20 {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+  border-color: rgba(59, 130, 246, 0.20) !important;
+}
+
+
+/* ==========================================================================
+   LIGHT MODE — SEMANTIC DESIGN SYSTEM (#F8F9FB, #FFFFFF, #F4F4F5, #2563EB)
+   ========================================================================== */
+
+html.light {
+  color-scheme: light;
+
+  --background: 220 20% 98%;    /* #F8F9FB Background Utama */
+  --foreground: 240 6% 10%;     /* #18181B Text Primary */
+
+  --card: 0 0% 100%;            /* #FFFFFF Surface / Card */
+  --card-foreground: 240 6% 10%; /* #18181B */
+
+  --popover: 0 0% 100%;         /* #FFFFFF */
+  --popover-foreground: 240 6% 10%; /* #18181B */
+
+  --primary: 221 83% 53%;       /* #2563EB Primary */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+
+  --secondary: 240 5% 96%;      /* #F4F4F5 Surface Secondary */
+  --secondary-foreground: 240 5% 34%; /* #52525B Text Secondary */
+
+  --muted: 240 5% 96%;          /* #F4F4F5 */
+  --muted-foreground: 240 5% 46%; /* #71717A Text Muted */
+
+  --accent: 221 83% 53%;        /* #2563EB */
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 5% 90%;         /* #E4E4E7 Border */
+  --input: 0 0% 100%;           /* #FFFFFF Input Surface */
+  --ring: 221 83% 53%;          /* #2563EB */
+}
+
+html.light body {
+  background-color: #F8F9FB !important;
+  color: #18181B !important;
+}
+
+/* Glassmorphic & Surface Panels in Light Mode */
+html.light .glass-panel {
+  background: #FFFFFF !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid #E4E4E7 !important;
+  color: #18181B !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Main Background Conversions in Light Mode */
+html.light .bg-slate-950,
+html.light .bg-zinc-950,
+html.light .bg-black {
+  background-color: #F8F9FB !important;
+}
+
+html.light .bg-gradient-to-br.from-slate-900,
+html.light .bg-gradient-to-br.from-slate-950 {
+  background: #FFFFFF !important;
+  border-color: #E4E4E7 !important;
+}
+
+html.light .bg-slate-900,
+html.light .bg-zinc-900 {
+  background-color: #FFFFFF !important;
+}
+
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/40,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/50,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/95,
+html.light .bg-slate-900\/98,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/60,
+html.light .bg-slate-950\/40,
+html.light .bg-slate-950\/90,
+html.light .bg-slate-950\/95 {
+  background-color: #FFFFFF !important;
+  color: #18181B !important;
+}
+
+/* Secondary Surface in Light Mode (#F4F4F5) */
+html.light .bg-slate-800,
+html.light .bg-zinc-800 {
+  background-color: #F4F4F5 !important;
+  color: #18181B !important;
+  border: 1px solid #E4E4E7 !important;
+}
+
+html.light .bg-slate-800:hover,
+html.light .bg-zinc-800:hover,
+html.light .hover\:bg-slate-800:hover,
+html.light .hover\:bg-slate-900:hover {
+  background-color: #F1F5F9 !important;
+  color: #18181B !important;
+  border-color: #D4D4D8 !important;
+}
+
+/* Border Color Conversions in Light Mode (#E4E4E7 & #D4D4D8) */
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .border-slate-800\/90,
+html.light .border-slate-900,
+html.light .border-zinc-800 {
+  border-color: #E4E4E7 !important;
+}
+
+html.light .border-slate-700,
+html.light .border-slate-700\/50,
+html.light .border-zinc-700 {
+  border-color: #D4D4D8 !important;
+}
+
+/* Typography Colors in Light Mode */
+html.light .text-white,
+html.light .text-slate-100,
+html.light .text-slate-900 {
+  color: #18181B !important; /* Dark Slate Primary Text in Light Mode */
+}
+
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-slate-400 {
+  color: #3F3F46 !important; /* Medium-dark Slate for body text in Light Mode */
+}
+
+html.light .text-slate-500,
+html.light .text-slate-600 {
+  color: #71717A !important; /* Muted Gray in Light Mode */
+}
+
+/* Primary Action Buttons & Filled Elements in Light Mode (#2563EB & Hover #1D4ED8) */
+html.light .bg-emerald-500,
+html.light .bg-emerald-400,
+html.light .bg-blue-600,
+html.light .bg-blue-500,
+html.light .bg-gradient-to-r.from-cyan-500,
+html.light .bg-gradient-to-r.from-emerald-500 {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+}
+
+html.light .bg-emerald-500 *,
+html.light .bg-emerald-400 *,
+html.light .bg-blue-600 *,
+html.light .bg-blue-500 *,
+html.light .bg-gradient-to-r.from-cyan-500 *,
+html.light .bg-gradient-to-r.from-emerald-500 * {
+  color: #FFFFFF !important;
+}
+
+html.light .bg-emerald-500:hover,
+html.light .bg-emerald-400:hover,
+html.light .bg-blue-600:hover,
+html.light .bg-blue-500:hover {
+  background-color: #1D4ED8 !important;
+  color: #FFFFFF !important;
+}
+
+html.light .text-slate-950 {
+  color: #FFFFFF !important;
+}
+
+/* Form Inputs, Textareas & Select Dropdowns in Light Mode */
+html.light input[type="text"],
+html.light input[type="email"],
+html.light input[type="password"],
+html.light input[type="number"],
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  border-color: #D4D4D8 !important;
+  color: #18181B !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #71717A !important;
+}
+
+html.light select option {
+  background-color: #FFFFFF !important;
+  color: #18181B !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #2563EB !important;
+}
+
+/* Table Design System in Light Mode */
+html.light table th {
+  background-color: #F4F4F5 !important;
+  color: #52525B !important;
+  border-bottom: 1px solid #E4E4E7 !important;
+}
+
+html.light table td {
+  border-bottom: 1px solid #E4E4E7 !important;
+}
+
+html.light table tr:hover {
+  background-color: #F1F5F9 !important;
+}
+
+/* Badge Pill Text Colors for High Contrast in Light Mode */
+html.light .text-emerald-400,
+html.light .text-emerald-300 {
+  color: #16A34A !important;
+}
+
+html.light .text-cyan-400,
+html.light .text-cyan-300 {
+  color: #0284C7 !important;
+}
+
+html.light .text-rose-400,
+html.light .text-rose-300 {
+  color: #DC2626 !important;
+}
+
+html.light .text-amber-400,
+html.light .text-amber-300 {
+  color: #D97706 !important;
+}
+
+html.light .text-blue-400,
+html.light .text-blue-300 {
+  color: #2563EB !important;
+}
+
+/* Badges with light backgrounds */
+html.light .bg-emerald-500\/10,
+html.light .bg-emerald-500\/20 {
+  background-color: #DCFCE7 !important;
+  border-color: #BBF7D0 !important;
+}
+
+html.light .bg-cyan-500\/10,
+html.light .bg-cyan-500\/20 {
+  background-color: #E0F2FE !important;
+  border-color: #BAE6FD !important;
+}
+
+html.light .bg-rose-500\/10,
+html.light .bg-rose-500\/20 {
+  background-color: #FEE2E2 !important;
+  border-color: #FCA5A5 !important;
+}
+
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/20 {
+  background-color: #FEF3C7 !important;
+  border-color: #FDE68A !important;
+}
+
+html.light .bg-blue-500\/10,
+html.light .bg-blue-500\/20 {
+  background-color: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+}
+
+/* Modal & Drawer Backdrop in Light Mode */
+html.light .modal-backdrop {
+  background-color: rgba(24, 24, 27, 0.40) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Custom Scrollbar in Light Mode */
+html.light ::-webkit-scrollbar-track {
+  background: #F8F9FB;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #D4D4D8;
+}
+
+/* QRIS Container MUST remain clean white (#FFFFFF) in both Dark and Light modes */
+.qris-container {
+  background-color: #FFFFFF !important;
+  padding: 1rem !important;
+  border-radius: 1rem !important;
+}
+
+/* Print / PDF Invoice Engine Styles */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+
+  body {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force light mode elements in print */
+  #invoice-paper {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Prevent awkward page breaks */
+  table, tr, td, th {
+    page-break-inside: avoid !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
