@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { ShoppingBag, ArrowRight, Star } from 'lucide-react';
 import { formatIDR } from '@/lib/utils/formatters';
-import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 
 export interface ProductCardProps {
@@ -31,7 +30,6 @@ export interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCart();
   const { t } = useLanguage();
   const primaryVariant = product.variants[0];
 
@@ -41,26 +39,11 @@ export function ProductCard({ product }: ProductCardProps) {
     ? Math.round(((primaryVariant.compareAtPrice - primaryVariant.price) / primaryVariant.compareAtPrice) * 100)
     : null;
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem({
-      variantId: primaryVariant.id,
-      productName: product.name,
-      variantName: primaryVariant.name,
-      price: primaryVariant.price,
-      quantity: 1,
-      thumbnail: product.thumbnail || undefined,
-      sku: primaryVariant.sku,
-      deliveryType: primaryVariant.deliveryType,
-    });
-  };
-
   const reviewsList = product.reviews || [];
   const reviewCount = reviewsList.length;
   const avgRating = reviewCount > 0
     ? (reviewsList.reduce((acc, r) => acc + r.rating, 0) / reviewCount).toFixed(1)
-    : '5.0';
+    : null;
 
   const views = product.viewCount || 0;
   const formattedViews = views >= 1000 ? `${(views / 1000).toFixed(1)}k` : views.toString();
@@ -110,14 +93,18 @@ export function ProductCard({ product }: ProductCardProps) {
           </p>
 
           <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-            {/* Rating */}
-            <div className="flex items-center gap-1 text-amber-400 font-bold">
-              <Star className="h-3.5 w-3.5 fill-amber-400" />
-              <span>{avgRating}</span>
-              <span className="text-slate-500 font-normal text-[10px]">({reviewCount})</span>
-            </div>
+            {/* Rating: only shown once there is at least one real review */}
+            {avgRating && (
+              <>
+                <div className="flex items-center gap-1 text-amber-400 font-bold">
+                  <Star className="h-3.5 w-3.5 fill-amber-400" />
+                  <span>{avgRating}</span>
+                  <span className="text-slate-500 font-normal text-[10px]">({reviewCount})</span>
+                </div>
 
-            <span className="text-slate-700">•</span>
+                <span className="text-slate-700">•</span>
+              </>
+            )}
 
             {/* Sold Count Badge */}
             <div className="flex items-center gap-1 text-amber-500 font-bold text-[11px]">
@@ -139,19 +126,11 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      {/* Bottom Section: Action Buttons (Keranjang & Dapatkan) */}
-      <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2.5">
-        <button
-          onClick={handleAddToCart}
-          className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 px-3 text-xs font-bold transition shadow-sm"
-        >
-          <ShoppingBag className="h-4 w-4 text-blue-600 dark:text-cyan-400" />
-          <span>{t('add_to_cart')}</span>
-        </button>
-
+      {/* Bottom Section: single call to action */}
+      <div className="mt-4 pt-3 border-t border-slate-800/80">
         <Link
           href={`/products/${product.slug}`}
-          className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-3 text-xs font-bold transition shadow-md shadow-blue-500/20 text-center"
+          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-3 text-xs font-bold transition shadow-md shadow-blue-500/20 text-center"
         >
           <span>{t('get_now')}</span>
           <ArrowRight className="h-3.5 w-3.5" />

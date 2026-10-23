@@ -2,17 +2,25 @@ import React from 'react';
 import { db } from '@/lib/db/prisma';
 import { HomePageClient } from '@/components/storefront/HomePageClient';
 import { SharedStockService } from '@/services/sharedStock.service';
+import { maskName } from '@/lib/utils/mask-name';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   // Fetch categories, featured products, and best sellers in parallel
-  const [categories, rawFeatured, rawBestSellers] = await Promise.all([
+  const [categories, rawFeatured, rawBestSellers, rawReviews] = await Promise.all([
     db.category.findMany({
       where: { active: true },
       take: 6,
       orderBy: { sortOrder: 'asc' },
-      select: { id: true, name: true, slug: true, description: true },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        icon: true,
+        _count: { select: { products: { where: { status: 'ACTIVE' } } } },
+      },
     }),
     db.product.findMany({
       where: { status: 'ACTIVE', featured: true },
@@ -62,7 +70,28 @@ export default async function HomePage() {
         reviews: { where: { status: 'APPROVED' }, select: { rating: true } },
       },
     }),
+    // Real, approved customer reviews only (shown on the homepage as social proof).
+    db.review.findMany({
+      where: { status: 'APPROVED', rating: { gte: 4 } },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      select: {
+        rating: true,
+        comment: true,
+        user: { select: { name: true } },
+        product: { select: { name: true } },
+      },
+    }),
   ]);
+
+  const reviews = rawReviews
+    .filter((r) => r.comment.trim().length > 0)
+    .map((r) => ({
+      rating: r.rating,
+      comment: r.comment.trim(),
+      author: maskName(r.user.name),
+      productName: r.product.name,
+    }));
 
   // Batch compute stock across all home page product variants
   const allVariants = [...rawFeatured.flatMap((p) => p.variants), ...rawBestSellers.flatMap((p) => p.variants)];
@@ -83,6 +112,7 @@ export default async function HomePage() {
       categories={categories}
       featuredProducts={featuredProducts}
       bestSellers={bestSellers}
+      reviews={reviews}
     />
   );
 }

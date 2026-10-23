@@ -94,7 +94,7 @@ export function Header({ userSession, featureFlags, siteSettings }: HeaderProps)
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
 
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 font-bold text-xl text-white group shrink-0">
+          <Link href="/" className="flex items-center gap-2.5 font-bold text-xl text-white group shrink-0 mr-4">
             <img
               src={logoUrl}
               alt={storeName}
@@ -103,23 +103,20 @@ export function Header({ userSession, featureFlags, siteSettings }: HeaderProps)
                 (e.target as HTMLImageElement).src = '/gogomi-logo.png';
               }}
             />
-            <span className="font-extrabold text-base sm:text-lg tracking-tight text-white">
+            <span className="font-extrabold text-base sm:text-lg tracking-tight text-white whitespace-nowrap">
               {storeName}
             </span>
           </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-          <Link href="/" className="hover:text-blue-400 transition-colors">
-            {t('nav_home')}
-          </Link>
+        <nav className="hidden md:flex items-center gap-5 whitespace-nowrap text-sm font-medium text-slate-300">
           <Link href="/products" className="hover:text-blue-400 transition-colors">
             {t('nav_products')}
           </Link>
           <Link href="/categories" className="hover:text-blue-400 transition-colors">
             {t('nav_categories')}
           </Link>
-          <Link href="/products?deals=true" className="hover:text-blue-400 transition-colors flex items-center gap-1 text-blue-400 font-semibold">
+          <Link href="/products?deals=true" className="hover:text-blue-400 transition-colors flex items-center gap-1 whitespace-nowrap text-blue-400 font-semibold">
             <Sparkles className="h-3.5 w-3.5" /> {t('nav_deals')}
           </Link>
         </nav>
@@ -140,7 +137,7 @@ export function Header({ userSession, featureFlags, siteSettings }: HeaderProps)
         <div className="flex items-center gap-1.5 sm:gap-2">
 
           {/* Language Switcher Button (Desktop & Tablet only to prevent mobile overflow) */}
-          <div className="hidden sm:block">
+          <div className="hidden xl:block">
             <LanguageSwitcher />
           </div>
 

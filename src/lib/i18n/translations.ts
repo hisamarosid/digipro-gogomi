@@ -16,10 +16,10 @@ export const translations = {
     cart: 'Keranjang',
 
     // Hero Section
-    hero_badge: 'Digital Software & License Store #1 Indonesia',
-    hero_title_1: 'Pusat Aplikasi & Lisensi Digital',
-    hero_title_2: 'Legal, Instan & Garansi Resmi',
-    hero_desc: 'Dapatkan akun AI Premium, lisensi software original, dan aplikasi produktivitas dengan sistem pengiriman otomatis dan pembayaran QRIS instan.',
+    hero_badge: 'Akun Premium & Lisensi Digital · Garansi 30 Hari',
+    hero_title_1: 'Akun Premium & Lisensi Digital',
+    hero_title_2: 'Hemat, Instan & Bergaransi',
+    hero_desc: 'Akun AI, streaming, dan software produktivitas dengan harga hemat. Bayar via QRIS, akun langsung dikirim otomatis.',
     hero_cta: 'Jelajahi Katalog Aplikasi',
 
     // Categories Bar
@@ -28,14 +28,14 @@ export const translations = {
     cat_all: 'Lihat Semua →',
 
     // Product Section Titles
-    top_charts_title: 'Aplikasi & Lisensi Terlaris (Top Charts)',
-    top_charts_desc: 'Software paling populer dengan ulasan tertinggi minggu ini',
+    top_charts_title: 'Produk Terlaris & Pilihan',
+    top_charts_desc: 'Yang paling banyak dibeli dan paling direkomendasikan',
     featured_title: 'Rekomendasi Software Unggulan',
     featured_desc: 'Pilihan lisensi legal dan paling direkomendasikan',
 
     // Product Card
     add_to_cart: '+ Keranjang',
-    get_now: 'Dapatkan',
+    get_now: 'Beli Sekarang',
     reviews_count: 'ulasan',
     views: 'views',
 
@@ -78,8 +78,8 @@ export const translations = {
     dev_test_mode_btn: '⚡ Simulasikan Pembayaran Sukses Instan',
 
     // Customer Reviews Section
-    reviews_title: 'Ulasan Pengguna Store',
-    reviews_subtitle: 'Proses pembelian instan, garansi aman, dan dukungan 24/7.',
+    reviews_title: 'Kata Pembeli',
+    reviews_subtitle: 'Ulasan dari pembeli yang sudah menyelesaikan pesanan.',
     review_verified_buyer: 'Pembeli Terverifikasi',
 
     // Customer Account Navigation & Sidebar
@@ -222,10 +222,10 @@ export const translations = {
     cart: 'Cart',
 
     // Hero Section
-    hero_badge: '#1 Digital Software & License Store',
-    hero_title_1: 'Digital Application & License Hub',
-    hero_title_2: 'Legal, Instant & Official Warranty',
-    hero_desc: 'Get Premium AI accounts, genuine software licenses, and productivity apps with instant automatic delivery and instant QRIS payment.',
+    hero_badge: 'Premium Accounts & Digital Licenses · 30-Day Warranty',
+    hero_title_1: 'Premium Accounts & Digital Licenses',
+    hero_title_2: 'Affordable, Instant & Warrantied',
+    hero_desc: 'AI, streaming, and productivity accounts at great prices. Pay with QRIS and get your account delivered automatically.',
     hero_cta: 'Explore Catalog',
 
     // Categories Bar
@@ -234,14 +234,14 @@ export const translations = {
     cat_all: 'View All →',
 
     // Product Section Titles
-    top_charts_title: 'Top Selling Apps & Licenses (Top Charts)',
-    top_charts_desc: 'Most popular software with top user reviews this week',
+    top_charts_title: 'Best Sellers & Picks',
+    top_charts_desc: 'Most purchased and most recommended',
     featured_title: 'Featured Recommended Software',
     featured_desc: 'Curated legal licenses highly recommended for creators',
 
     // Product Card
     add_to_cart: '+ Add to Cart',
-    get_now: 'Get Now',
+    get_now: 'Buy Now',
     reviews_count: 'reviews',
     views: 'views',
 
@@ -284,8 +284,8 @@ export const translations = {
     dev_test_mode_btn: '⚡ Simulate Payment Success Instantly',
 
     // Customer Reviews Section
-    reviews_title: 'Customer Reviews & Feedback',
-    reviews_subtitle: 'Instant fulfillment, guaranteed warranty, and 24/7 dedicated support.',
+    reviews_title: 'What Buyers Say',
+    reviews_subtitle: 'Reviews from buyers who completed their orders.',
     review_verified_buyer: 'Verified Buyer',
 
     // Customer Account Navigation & Sidebar
