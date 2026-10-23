@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Pagination } from '@/components/ui/Pagination';
+import { CredentialFieldsView } from '@/components/common/FormattedCredentialView';
 
 interface AdminOrdersClientProps {
     orders: any[];
@@ -639,14 +640,16 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
                                                                 </button>
                                                             </div>
 
-                                                            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-300 break-all select-all flex items-center justify-between">
-                                                                <span>{showPayloads[item.id] ? fulfillment.payloadRevealed : '••••••••••••••••••••••••••••••••'}</span>
+                                                            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-emerald-300 break-all flex items-start justify-between">
+                                                                {showPayloads[item.id]
+                                                                    ? <CredentialFieldsView content={fulfillment.payloadRevealed} />
+                                                                    : <span>••••••••••••••••••••••••••••••••</span>}
                                                                 {showPayloads[item.id] && (
                                                                     <button
                                                                         type="button"
                                                                         onClick={() => handleCopy(fulfillment.payloadRevealed)}
                                                                         className="ml-2 text-slate-400 hover:text-white p-1"
-                                                                        title="Salin"
+                                                                        title="Salin semua"
                                                                     >
                                                                         <Copy className="h-3.5 w-3.5" />
                                                                     </button>

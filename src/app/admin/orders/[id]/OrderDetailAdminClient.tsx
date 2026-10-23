@@ -22,6 +22,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { CredentialFieldsView } from '@/components/common/FormattedCredentialView';
 
 interface OrderDetailAdminClientProps {
   order: any;
@@ -322,13 +323,13 @@ export function OrderDetailAdminClient({ order: initialOrder }: OrderDetailAdmin
                           </div>
 
                           {showPayloads[ful.id] && (
-                            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-emerald-300 font-mono text-xs flex items-center justify-between gap-3 whitespace-pre-wrap break-all">
-                              <span>{ful.payloadRevealed || ful.payloadDecrypted}</span>
+                            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-emerald-300 font-mono text-xs flex items-start justify-between gap-3 whitespace-pre-wrap break-all">
+                              <CredentialFieldsView content={ful.payloadRevealed || ful.payloadDecrypted} />
                               <button
                                 type="button"
                                 onClick={() => copyToClipboard(ful.payloadRevealed || ful.payloadDecrypted, 'Kredensial')}
                                 className="p-1 rounded text-slate-400 hover:text-white shrink-0"
-                                title="Copy"
+                                title="Salin semua"
                               >
                                 <Copy className="h-4 w-4" />
                               </button>

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { Key, Eye, EyeOff, Copy, ShieldCheck, Download, Star, BookOpen, FileText, ExternalLink, Clock, AlertTriangle, ShoppingBag } from 'lucide-react';
-import { FormattedCredentialView, extractFirstUrl } from '@/components/common/FormattedCredentialView';
+import { CredentialFieldsView, extractFirstUrl } from '@/components/common/FormattedCredentialView';
 import { formatDateJakarta } from '@/lib/utils/formatters';
 import { toast } from 'sonner';
 import { ReplacementProtectionCard } from '@/components/account/ReplacementProtectionCard';
@@ -212,11 +212,11 @@ export function ProductCredentialsClient({
                       )}
                     </div>
 
-                    <div className="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 flex items-center justify-between font-mono text-xs text-blue-600 dark:text-cyan-300 font-bold break-all select-all">
+                    <div className="bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80 flex items-start justify-between gap-2 font-mono text-xs text-blue-600 dark:text-cyan-300 font-bold break-all">
                       {f.isPendingReplacement && (!payloadText || payloadText === 'No payload snapshot available') ? (
                         <span className="text-amber-400 font-normal text-xs">Menunggu alokasi akun master baru dari sistem...</span>
                       ) : isRevealed ? (
-                        <FormattedCredentialView content={payloadText} />
+                        <CredentialFieldsView content={payloadText} />
                       ) : (
                         <span>••••••••••••••••••••••••••••••••</span>
                       )}
@@ -224,7 +224,7 @@ export function ProductCredentialsClient({
                         <button
                           onClick={() => handleCopy(payloadText)}
                           className="ml-2 text-slate-400 hover:text-blue-600 dark:hover:text-white p-1 shrink-0 transition"
-                          title="Salin"
+                          title="Salin semua"
                         >
                           <Copy className="h-4 w-4" />
                         </button>
