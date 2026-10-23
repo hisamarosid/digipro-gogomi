@@ -28,6 +28,7 @@ import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { LogoutButton } from '@/components/auth/LogoutButton';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { LivePurchaseTicker } from '@/components/storefront/LivePurchaseTicker';
 import { SiteSettingsData } from '@/services/siteSetting.service';
 
 interface HeaderProps {
@@ -237,6 +238,8 @@ export function Header({ userSession, featureFlags, siteSettings }: HeaderProps)
           </button>
         </div>
       </div>
+
+      <LivePurchaseTicker />
 
       {/* Mobile Slide Drawer Menu */}
       {mobileMenuOpen && (
