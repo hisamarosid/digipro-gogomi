@@ -27,7 +27,7 @@ export default async function AdminOrdersPage() {
   try {
     const rawOrders = await db.order.findMany({
       include: {
-        user: { select: { id: true, name: true, email: true } },
+        user: { select: { id: true, name: true, email: true, phone: true } },
         items: {
           include: {
             variant: {

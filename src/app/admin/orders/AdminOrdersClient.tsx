@@ -22,6 +22,9 @@ import {
     X,
     ExternalLink,
     ShieldCheck,
+    MessageCircle,
+    Mail,
+    PackageCheck,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Pagination } from '@/components/ui/Pagination';
@@ -210,6 +213,29 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
         }
     };
 
+    const confirmStatusChange = (ord: any, status: string, message: string) => {
+        if (window.confirm(`Pesanan #${ord.orderNumber}\n\n${message}`)) {
+            handleUpdateOrderStatus(ord.id, status);
+        }
+    };
+
+    /** WhatsApp link when a phone number is known, otherwise a mailto link; null when neither exists. */
+    const getContactLink = (ord: any): { href: string; label: string; kind: 'wa' | 'mail' } | null => {
+        const rawPhone: string = ord.user?.phone || ord.guestPhone || '';
+        const digits = rawPhone.replace(/\D/g, '');
+        if (digits.length >= 8) {
+            const intl = digits.startsWith('0') ? `62${digits.slice(1)}` : digits;
+            const text = encodeURIComponent(`Halo, terkait pesanan #${ord.orderNumber} di Gogomi Store.`);
+            return { href: `https://wa.me/${intl}?text=${text}`, label: 'Hubungi via WhatsApp', kind: 'wa' };
+        }
+        const email = ord.user?.email || ord.guestEmail;
+        if (email) {
+            const subject = encodeURIComponent(`Pesanan #${ord.orderNumber} - Gogomi Store`);
+            return { href: `mailto:${email}?subject=${subject}`, label: 'Kirim email ke pelanggan', kind: 'mail' };
+        }
+        return null;
+    };
+
     return (
         <div className="space-y-6">
 
@@ -391,25 +417,97 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
 
                                             {/* Actions */}
                                             <td className="py-3 px-3 text-right">
-                                                <div className="flex items-center justify-end gap-1.5">
-                                                    {(ord.status === 'PAID' || ord.status === 'NEEDS_FULFILLMENT') && (
-                                                        <button
-                                                            onClick={() => handleTriggerFulfillment(ord.id)}
-                                                            disabled={isProcessing}
-                                                            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition"
-                                                            title="Proses / Retry Fulfillment"
-                                                        >
-                                                            <Zap className="h-3.5 w-3.5" />
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => setSelectedOrder(ord)}
-                                                        className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition"
-                                                        title="Detail Order"
-                                                    >
-                                                        <Eye className="h-3.5 w-3.5" />
-                                                    </button>
-                                                </div>
+                                                {(() => {
+                                                    const contact = getContactLink(ord);
+                                                    const canFulfill = ['PAID', 'PROCESSING', 'NEEDS_FULFILLMENT'].includes(ord.status);
+                                                    return (
+                                                        <div className="flex flex-wrap items-center justify-end gap-1.5">
+                                                            {ord.status === 'PENDING_PAYMENT' && (
+                                                                <>
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            confirmStatusChange(
+                                                                                ord,
+                                                                                'PAID',
+                                                                                'Tandai pesanan ini sudah DIBAYAR?\nStok akan langsung dialokasikan dan dikirim ke pelanggan.'
+                                                                            )
+                                                                        }
+                                                                        disabled={isProcessing}
+                                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition disabled:opacity-50"
+                                                                        title="Tandai sudah dibayar & kirim"
+                                                                    >
+                                                                        <CheckCircle2 className="h-3.5 w-3.5" />
+                                                                        <span>Tandai Lunas</span>
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            confirmStatusChange(
+                                                                                ord,
+                                                                                'CANCELLED',
+                                                                                'Batalkan pesanan ini?\nKupon, koin, dan reservasi stok akan dikembalikan.'
+                                                                            )
+                                                                        }
+                                                                        disabled={isProcessing}
+                                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-rose-600/90 hover:bg-rose-500 text-white text-[11px] font-bold transition disabled:opacity-50"
+                                                                        title="Batalkan pesanan"
+                                                                    >
+                                                                        <XCircle className="h-3.5 w-3.5" />
+                                                                        <span>Batalkan</span>
+                                                                    </button>
+                                                                </>
+                                                            )}
+
+                                                            {canFulfill && (
+                                                                <>
+                                                                    <button
+                                                                        onClick={() => handleTriggerFulfillment(ord.id)}
+                                                                        disabled={isProcessing}
+                                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold transition disabled:opacity-50"
+                                                                        title="Proses / Retry Fulfillment (otomatis)"
+                                                                    >
+                                                                        <Zap className="h-3.5 w-3.5" />
+                                                                        <span>Proses</span>
+                                                                    </button>
+                                                                    <Link
+                                                                        href={`/admin/orders/${ord.id}`}
+                                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/25 text-[11px] font-bold transition"
+                                                                        title="Kirim kredensial secara manual"
+                                                                    >
+                                                                        <PackageCheck className="h-3.5 w-3.5" />
+                                                                        <span>Kirim Manual</span>
+                                                                    </Link>
+                                                                </>
+                                                            )}
+
+                                                            {contact && (
+                                                                <a
+                                                                    href={contact.href}
+                                                                    target={contact.kind === 'wa' ? '_blank' : undefined}
+                                                                    rel="noopener noreferrer"
+                                                                    className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-emerald-400 hover:text-emerald-300 transition"
+                                                                    title={contact.label}
+                                                                >
+                                                                    {contact.kind === 'wa' ? <MessageCircle className="h-3.5 w-3.5" /> : <Mail className="h-3.5 w-3.5" />}
+                                                                </a>
+                                                            )}
+
+                                                            <button
+                                                                onClick={() => setSelectedOrder(ord)}
+                                                                className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition"
+                                                                title="Lihat ringkasan (popup)"
+                                                            >
+                                                                <Eye className="h-3.5 w-3.5" />
+                                                            </button>
+                                                            <Link
+                                                                href={`/admin/orders/${ord.id}`}
+                                                                className="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-400 hover:text-white transition"
+                                                                title="Buka halaman detail lengkap"
+                                                            >
+                                                                <ExternalLink className="h-3.5 w-3.5" />
+                                                            </Link>
+                                                        </div>
+                                                    );
+                                                })()}
                                             </td>
 
                                         </tr>
@@ -604,7 +702,13 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
                                     <select
                                         value={selectedOrder.status}
                                         disabled={isProcessing}
-                                        onChange={(e) => handleUpdateOrderStatus(selectedOrder.id, e.target.value)}
+                                        onChange={(e) =>
+                                            confirmStatusChange(
+                                                selectedOrder,
+                                                e.target.value,
+                                                `Ubah status dari ${selectedOrder.status} menjadi ${e.target.value}?`
+                                            )
+                                        }
                                         className="rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-xs font-bold text-white focus:border-cyan-500"
                                     >
                                         <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
@@ -617,7 +721,7 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
                                 </div>
                             </div>
 
-                            {selectedOrder.status === 'PENDING_PAYMENT' && (
+                            {process.env.NODE_ENV !== 'production' && selectedOrder.status === 'PENDING_PAYMENT' && (
                                 <div className="pt-2 border-t border-slate-800">
                                     <button
                                         disabled={isProcessing}
@@ -631,7 +735,14 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
                         </div>
 
                         {/* Footer */}
-                        <div className="flex justify-end pt-2">
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Link
+                                href={`/admin/orders/${selectedOrder.id}`}
+                                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-cyan-400 hover:text-cyan-300 font-bold text-xs"
+                            >
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                <span>Buka Halaman Lengkap</span>
+                            </Link>
                             <button
                                 onClick={() => setSelectedOrder(null)}
                                 className="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white font-bold text-xs"
