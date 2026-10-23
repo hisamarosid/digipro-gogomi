@@ -2,9 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ShoppingBag, ArrowRight, Star } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Star, MessageCircle } from 'lucide-react';
 import { formatIDR } from '@/lib/utils/formatters';
 import { useLanguage } from '@/context/LanguageContext';
+import { useSupportWhatsapp } from '@/lib/hooks/useSupportWhatsapp';
+import { buildWhatsappLink, isServiceProduct } from '@/lib/utils/whatsapp';
 
 export interface ProductCardProps {
   product: {
@@ -25,13 +27,16 @@ export interface ProductCardProps {
       price: number;
       compareAtPrice?: number | null;
       deliveryType: string;
+      deliveryModel?: string;
     }>;
   };
 }
 
 export function ProductCard({ product }: ProductCardProps) {
   const { t } = useLanguage();
+  const supportWhatsapp = useSupportWhatsapp();
   const primaryVariant = product.variants[0];
+  const isService = isServiceProduct(product.variants);
 
   if (!primaryVariant) return null;
 
@@ -119,6 +124,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 {formatIDR(primaryVariant.compareAtPrice)}
               </span>
             )}
+            {isService && product.variants.length > 1 && <span className="text-[11px] text-slate-500">mulai</span>}
             <span className="text-sm font-extrabold text-white">
               {formatIDR(primaryVariant.price)}
             </span>
@@ -128,13 +134,41 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Bottom Section: single call to action */}
       <div className="mt-4 pt-3 border-t border-slate-800/80">
-        <Link
-          href={`/products/${product.slug}`}
-          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-3 text-xs font-bold transition shadow-md shadow-blue-500/20 text-center"
-        >
-          <span>{t('get_now')}</span>
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
+        {isService ? (
+          (() => {
+            const waLink = buildWhatsappLink(
+              supportWhatsapp,
+              `Halo admin Gogomi, saya mau pesan *${product.name}* (mulai ${formatIDR(primaryVariant.price)}). Mohon info detail dan caranya.\n${typeof window !== 'undefined' ? window.location.origin : ''}/products/${product.slug}`
+            );
+            return waLink ? (
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 hover:bg-green-500 text-white py-2.5 px-3 text-xs font-bold transition shadow-md shadow-green-600/20 text-center"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>Pesan via WA</span>
+              </a>
+            ) : (
+              <Link
+                href={`/products/${product.slug}`}
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-3 text-xs font-bold transition text-center"
+              >
+                <span>{t('get_now')}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            );
+          })()
+        ) : (
+          <Link
+            href={`/products/${product.slug}`}
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white py-2.5 px-3 text-xs font-bold transition shadow-md shadow-blue-500/20 text-center"
+          >
+            <span>{t('get_now')}</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
       </div>
 
     </div>

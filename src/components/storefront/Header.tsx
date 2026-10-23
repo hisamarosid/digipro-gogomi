@@ -116,6 +116,9 @@ export function Header({ userSession, featureFlags, siteSettings }: HeaderProps)
           <Link href="/categories" className="hover:text-blue-400 transition-colors">
             {t('nav_categories')}
           </Link>
+          <Link href="/products?category=jasa-digital" className="hidden lg:inline hover:text-blue-400 transition-colors">
+            Jasa Digital
+          </Link>
           <Link href="/products?deals=true" className="hover:text-blue-400 transition-colors flex items-center gap-1 whitespace-nowrap text-blue-400 font-semibold">
             <Sparkles className="h-3.5 w-3.5" /> {t('nav_deals')}
           </Link>

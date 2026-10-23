@@ -100,6 +100,7 @@ export function Footer({ siteSettings }: FooterProps) {
             <li><Link href="/products?category=ai-developer-tools" className="hover:text-cyan-400 transition">AI & Developer Tools</Link></li>
             <li><Link href="/products?category=streaming-entertainment" className="hover:text-cyan-400 transition">Streaming & Entertainment</Link></li>
             <li><Link href="/products?category=social-media-accounts" className="hover:text-cyan-400 transition">Social Media Accounts</Link></li>
+            <li><Link href="/products?category=jasa-digital" className="hover:text-cyan-400 transition">Jasa Digital</Link></li>
             <li><Link href="/categories" className="text-cyan-400 font-bold hover:underline flex items-center gap-1 pt-1">Lihat Semua Kategori &rarr;</Link></li>
           </ul>
         </div>

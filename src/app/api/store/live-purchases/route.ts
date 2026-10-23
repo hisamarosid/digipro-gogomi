@@ -19,7 +19,8 @@ let cache: { at: number; data: LivePurchase[] } | null = null;
 function productLabel(productName: string, variantName: string): string {
   const p = productName.trim();
   const v = variantName.trim();
-  if (!v || p.toLowerCase().includes(v.toLowerCase())) return p;
+  // Custom service invoices use the placeholder variant name "Jasa Custom": show just the service title.
+  if (!v || v === '-' || v === 'Jasa Custom' || p.toLowerCase().includes(v.toLowerCase())) return p;
   return `${p} ${v}`;
 }
 

@@ -160,6 +160,12 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Manually delivered items are services: the admin needs a way to reach the buyer.
+    if (items.some((i) => i.deliveryModel === 'MANUAL' || i.deliveryType === 'MANUAL') && guestPhone.trim().length < 9) {
+      toast.error('Nomor WhatsApp wajib diisi untuk pemesanan jasa agar admin bisa menghubungi Anda.');
+      return;
+    }
+
     // A typo here would send the order link to a stranger, so guests retype their email.
     if (!loggedInUser && guestEmailConfirm.trim().toLowerCase() !== cleanGuestEmail.toLowerCase()) {
       toast.error('Konfirmasi email tidak sama. Periksa lagi penulisan email Anda.');
@@ -360,7 +366,9 @@ export default function CheckoutPage() {
               )}
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Nomor WhatsApp (Opsional)</label>
+                <label className="block text-slate-300 font-medium mb-1">
+                  Nomor WhatsApp {items.some((i) => i.deliveryModel === 'MANUAL' || i.deliveryType === 'MANUAL') ? '*' : '(Opsional)'}
+                </label>
                 <input
                   type="tel"
                   placeholder="081234567890"

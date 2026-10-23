@@ -24,11 +24,15 @@ import {
 } from 'lucide-react';
 import { formatIDR, maskCustomerName } from '@/lib/utils/formatters';
 import { useCart } from '@/context/CartContext';
+import { useSupportWhatsapp } from '@/lib/hooks/useSupportWhatsapp';
+import { buildWhatsappLink, isServiceProduct } from '@/lib/utils/whatsapp';
 import { toast } from 'sonner';
 
 export function ProductDetailClient({ product }: { product: any }) {
   const router = useRouter();
   const { addItem } = useCart();
+  const supportWhatsapp = useSupportWhatsapp();
+  const isService = isServiceProduct(product.variants);
 
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id || '');
   const [openFaqId, setOpenFaqId] = useState<string | null>(null);
@@ -56,6 +60,13 @@ export function ProductDetailClient({ product }: { product: any }) {
 
   const stockCount = selectedVariant?.availableStock ?? (selectedVariant?.inventoryItems?.length || 0);
   const isOutOfStock = stockCount === 0 && selectedVariant?.deliveryModel !== 'DOWNLOAD' && selectedVariant?.deliveryModel !== 'MANUAL';
+
+  const serviceWhatsappLink = isService
+    ? buildWhatsappLink(
+        supportWhatsapp,
+        `Halo admin Gogomi, saya mau pesan *${product.name}*${selectedVariant ? ` (${selectedVariant.name}, ${formatIDR(selectedVariant.price)})` : ''}. Mohon info detail dan caranya.\n${typeof window !== 'undefined' ? window.location.href : ''}`
+      )
+    : null;
 
   const viewsCount = product.viewCount || 1;
 
@@ -538,21 +549,39 @@ export function ProductDetailClient({ product }: { product: any }) {
                 </button>
               ) : (
                 <>
+                  {isService && serviceWhatsappLink && (
+                    <a
+                      href={serviceWhatsappLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-green-600 hover:bg-green-500 py-3.5 text-xs font-bold text-white shadow-lg shadow-green-600/20 transition"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      <span>Pesan via WhatsApp</span>
+                    </a>
+                  )}
+
                   <button
                     onClick={handleBuyNow}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 py-3.5 text-xs font-bold text-white shadow-lg shadow-blue-500/20 transition"
+                    className={`w-full flex items-center justify-center gap-2 rounded-xl py-3.5 text-xs font-bold transition ${
+                      isService && serviceWhatsappLink
+                        ? 'bg-slate-800 hover:bg-slate-700 text-slate-100'
+                        : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20'
+                    }`}
                   >
-                    <span>Beli Sekarang (QRIS Instan)</span>
+                    <span>{isService ? 'Bayar Langsung (QRIS)' : 'Beli Sekarang (QRIS Instan)'}</span>
                     <ArrowRight className="h-4 w-4" />
                   </button>
 
-                  <button
-                    onClick={handleAddToCart}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 py-3 text-xs font-bold text-slate-100 transition"
-                  >
-                    <ShoppingBag className="h-4 w-4" />
-                    <span>+ Keranjang Belanja</span>
-                  </button>
+                  {!isService && (
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-full flex items-center justify-center gap-2 rounded-xl bg-slate-800 hover:bg-slate-700 py-3 text-xs font-bold text-slate-100 transition"
+                    >
+                      <ShoppingBag className="h-4 w-4" />
+                      <span>+ Keranjang Belanja</span>
+                    </button>
+                  )}
                 </>
               )}
             </div>
@@ -651,7 +680,20 @@ export function ProductDetailClient({ product }: { product: any }) {
           </button>
         ) : (
           <>
-            {/* Add to Cart Button */}
+            {isService && serviceWhatsappLink && (
+              <a
+                href={serviceWhatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1.5 rounded-2xl bg-green-600 hover:bg-green-500 text-white py-3 text-xs font-extrabold transition shadow-lg shadow-green-600/30"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>Pesan WA</span>
+              </a>
+            )}
+
+            {/* Add to Cart Button (not for services: they are ordered via chat or paid directly) */}
+            {!isService && (
             <button
               onClick={handleAddToCart}
               className="flex-1 flex items-center justify-center gap-1.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 py-3 text-xs font-extrabold transition border border-slate-700/60"
@@ -659,13 +701,18 @@ export function ProductDetailClient({ product }: { product: any }) {
               <ShoppingBag className="h-4 w-4 text-blue-600 dark:text-cyan-400" />
               <span>+ Keranjang</span>
             </button>
+            )}
 
             {/* Buy Now Button */}
             <button
               onClick={handleBuyNow}
-              className="flex-1 flex items-center justify-center gap-1.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white py-3 text-xs font-extrabold transition shadow-lg shadow-blue-600/30"
+              className={`flex-1 flex items-center justify-center gap-1.5 rounded-2xl py-3 text-xs font-extrabold transition ${
+                isService && serviceWhatsappLink
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700/60'
+                  : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30'
+              }`}
             >
-              <span>Beli Sekarang</span>
+              <span>{isService ? 'Bayar (QRIS)' : 'Beli Sekarang'}</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </>

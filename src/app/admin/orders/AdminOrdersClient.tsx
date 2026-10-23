@@ -260,6 +260,13 @@ export function AdminOrdersClient({ orders: initialOrders }: AdminOrdersClientPr
 
                     <div className="flex items-center gap-2 shrink-0">
                         <Link
+                            href="/admin/orders/invoice"
+                            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-950 border border-slate-700 hover:border-cyan-500/60 text-white font-bold text-xs transition"
+                        >
+                            <CreditCard className="h-4 w-4 text-cyan-400" />
+                            <span>Buat Tagihan</span>
+                        </Link>
+                        <Link
                             href="/admin/operations/fulfillment"
                             className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition"
                         >

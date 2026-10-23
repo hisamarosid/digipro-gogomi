@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/db/prisma';
 import { ProductCard } from '@/components/storefront/ProductCard';
+import { ServiceChatCard } from '@/components/storefront/ServiceChatCard';
 import { Search, Filter, Sparkles, SlidersHorizontal, ArrowUpDown, X, Tag } from 'lucide-react';
 import { SharedStockService } from '@/services/sharedStock.service';
 
@@ -291,6 +292,7 @@ export default async function ProductsCatalogPage({
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
+          {category === 'jasa-digital' && <ServiceChatCard />}
         </div>
       )}
 
