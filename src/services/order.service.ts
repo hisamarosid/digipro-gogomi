@@ -318,6 +318,16 @@ export class OrderService {
     const cleanEmail = email.toLowerCase().trim();
 
     try {
+      // Security: guest orders carry credentials. Only link them once the account owner has proven
+      // they control this inbox; otherwise anyone could register with someone else's email.
+      const owner = await db.user.findUnique({
+        where: { id: userId },
+        select: { email: true, emailVerified: true },
+      });
+      if (!owner || !owner.emailVerified || owner.email.toLowerCase().trim() !== cleanEmail) {
+        return { claimedCount: 0 };
+      }
+
       const guestOrders = await db.order.findMany({
         where: {
           userId: null,

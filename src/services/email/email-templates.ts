@@ -96,8 +96,12 @@ export class EmailTemplates {
             { label: 'Jumlah Dibayar', value: '{{amount}}' },
             { label: 'Metode Pembayaran', value: '{{paymentMethod}}' },
           ],
-          ctaText: 'LIHAT STATUS PESANAN',
-          ctaUrl: '/account/orders',
+          ctaText: 'LIHAT PESANAN SAYA',
+          // Guests get their private order link here; members fall back to their dashboard.
+          ctaUrl: data.actionUrl ? '{{actionUrl}}' : '/account/orders',
+          footerNote: data.actionUrl && String(data.actionUrl).includes('t=')
+            ? 'Link ini bersifat pribadi dan berisi akses ke pesanan Anda. Jangan dibagikan kepada siapa pun.'
+            : undefined,
           data,
         });
 
@@ -141,8 +145,10 @@ export class EmailTemplates {
             { label: 'Status Akses', value: 'AKTIF' },
           ],
           ctaText: 'LIHAT PRODUK SAYA',
-          ctaUrl: '/account/products',
-          footerNote: 'Demi keamanan, informasi kredensial lisensi tidak dikirimkan lewat email. Masuk ke dashboard akun Anda untuk melihat kredensial.',
+          ctaUrl: data.actionUrl && String(data.actionUrl).includes('t=') ? '{{actionUrl}}' : '/account/products',
+          footerNote: data.actionUrl && String(data.actionUrl).includes('t=')
+            ? 'Demi keamanan, kredensial tidak dikirimkan lewat email. Buka produk lewat tombol di atas. Link ini bersifat pribadi, jangan dibagikan kepada siapa pun.'
+            : 'Demi keamanan, informasi kredensial lisensi tidak dikirimkan lewat email. Masuk ke dashboard akun Anda untuk melihat kredensial.',
           data,
         });
 
@@ -336,6 +342,31 @@ export class EmailTemplates {
             'Terdeteksi masalah operasional tingkat CRITICAL: {{reason}}. Segera periksa Control Panel Admin.',
           ctaText: 'BUKA ADMIN CONTROL PANEL',
           ctaUrl: '/admin/notifications',
+          data,
+        });
+
+      case 'ORDER_ACCESS_LINK':
+        return EmailRenderer.renderBaseTemplate({
+          subject: 'Link Pesanan #{{orderNumber}} — Gogomi Store',
+          title: 'Link Pribadi Pesanan Anda',
+          bodyContent:
+            'Anda meminta link untuk membuka pesanan #{{orderNumber}}. Klik tombol di bawah untuk melihat status dan produk digital Anda. Jika bukan Anda yang meminta, abaikan email ini.',
+          infoRows: [{ label: 'Nomor Order', value: '#{{orderNumber}}' }],
+          ctaText: 'BUKA PESANAN SAYA',
+          ctaUrl: '{{actionUrl}}',
+          footerNote: 'Link ini bersifat pribadi. Jangan dibagikan kepada siapa pun.',
+          data,
+        });
+
+      case 'CLAIM_ACCOUNT':
+        return EmailRenderer.renderBaseTemplate({
+          subject: 'Simpan Pesanan Anda ke Akun Gogomi Store',
+          title: 'Aktifkan Akun Anda',
+          bodyContent:
+            'Halo {{customerName}}, klik tombol di bawah untuk membuat password dan menyimpan pesanan Anda ke akun Gogomi Store. Email ini otomatis terverifikasi, tidak perlu konfirmasi lagi. Link berlaku 24 jam.',
+          ctaText: 'BUAT PASSWORD & AKTIFKAN AKUN',
+          ctaUrl: '{{actionUrl}}',
+          footerNote: 'Jika Anda tidak merasa membeli di Gogomi Store, abaikan email ini.',
           data,
         });
 

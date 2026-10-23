@@ -16,10 +16,7 @@ export default async function CustomerOrdersPage() {
   const [orders, existingReviews] = await Promise.all([
     db.order.findMany({
       where: {
-        OR: [
-          { userId: session.userId },
-          { guestEmail: session.email },
-        ],
+        userId: session.userId,
       },
       select: {
         id: true,

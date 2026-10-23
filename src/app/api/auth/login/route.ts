@@ -1,3 +1,4 @@
+import { OrderService } from '@/services/order.service';
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/prisma';
 import { verifyPassword } from '@/lib/auth/password';
@@ -50,16 +51,8 @@ export async function POST(req: NextRequest) {
       role: user.role,
     });
 
-    // Auto-link any previous guest orders matching this email
-    await db.order.updateMany({
-      where: {
-        guestEmail: user.email,
-        userId: null,
-      },
-      data: {
-        userId: user.id,
-      },
-    });
+    // Link previous guest orders (the service only does so for verified emails)
+    await OrderService.claimGuestOrdersForUser(user.id, user.email);
 
     return NextResponse.json({
       success: true,

@@ -3,6 +3,7 @@ import { db } from '@/lib/db/prisma';
 import { hashToken } from '@/lib/auth/validation';
 import { getCurrentSession, setSessionCookie } from '@/lib/auth/session';
 import { AuditService } from '@/services/audit.service';
+import { OrderService } from '@/services/order.service';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 
 async function handleVerification(token: string | null, req: NextRequest) {
@@ -95,6 +96,9 @@ async function handleVerification(token: string | null, req: NextRequest) {
       data: { used: true },
     }),
   ]);
+
+  // Now that the inbox is proven, attach purchases made as a guest with this email
+  await OrderService.claimGuestOrdersForUser(user.id, user.email);
 
   // Update session cookie if the logged-in user matches
   const currentSession = await getCurrentSession();

@@ -11,6 +11,17 @@ import { CheckoutProgress } from '@/components/storefront/CheckoutProgress';
 export function PaymentClient({ order, payment }: { order: any; payment: any }) {
   const router = useRouter();
 
+  // Guests are identified by a private token saved in this browser at checkout.
+  const successUrl = () => {
+    let token: string | null = null;
+    try {
+      token = localStorage.getItem(`order_token_${order.orderNumber}`);
+    } catch {
+      token = null;
+    }
+    return `/payment/success?orderNumber=${order.orderNumber}${token ? `&t=${encodeURIComponent(token)}` : ''}`;
+  };
+
   const [paymentStatus, setPaymentStatus] = useState<string>(order.paymentStatus);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState<number>(() => {
     // Initial calculation for immediate render
@@ -79,7 +90,7 @@ export function PaymentClient({ order, payment }: { order: any; payment: any }) 
           if (data.status === 'PAID') {
             setPaymentStatus('PAID');
             toast.success('Pembayaran Berhasil Diterima!');
-            router.push(`/payment/success?orderNumber=${order.orderNumber}`);
+            router.push(successUrl());
           } else if (data.status === 'EXPIRED') {
             setPaymentStatus('EXPIRED');
           }
@@ -170,7 +181,7 @@ export function PaymentClient({ order, payment }: { order: any; payment: any }) 
         <h2 className="text-xl font-bold text-white">Pembayaran Sukses!</h2>
         <p className="text-xs text-slate-400">Pesanan Anda telah dikonfirmasi dan produk sedang diproses.</p>
         <button
-          onClick={() => router.push(`/payment/success?orderNumber=${order.orderNumber}`)}
+          onClick={() => router.push(successUrl())}
           className="rounded-xl bg-emerald-500 px-6 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/20"
         >
           Lihat Produk Saya

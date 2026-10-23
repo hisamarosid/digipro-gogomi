@@ -108,16 +108,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Auto-link previous guest orders matching this email
-    await db.order.updateMany({
-      where: {
-        guestEmail: cleanEmail,
-        userId: null,
-      },
-      data: {
-        userId: newUser.id,
-      },
-    });
+    // Guest orders placed with this email are linked only after the email is verified
+    // (see verify-email route), so an unverified signup can never see someone else's purchases.
 
     // Create verification token (expires in 24 hours)
     const rawVerificationToken = generateSecureToken();

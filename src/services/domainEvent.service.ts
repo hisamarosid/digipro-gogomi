@@ -4,6 +4,7 @@ import { EmailService } from './email.service';
 import { TelegramService } from './telegram.service';
 import { NotificationOrchestrator } from './email/email-orchestrator';
 import { CustomerNotificationCategory } from '../../generated/prisma';
+import { buildOrderAccessPath } from '@/lib/utils/order-link';
 
 export interface DomainEventPayload {
   eventName: string;
@@ -92,7 +93,10 @@ export class DomainEventService {
                     eventType: 'PAYMENT_SUCCESS',
                     title: `Pembayaran Berhasil — Order #${fullOrder.orderNumber}`,
                     message: `Terima kasih! Pembayaran sebesar Rp${fullOrder.grandTotal.toLocaleString('id-ID')} untuk Order #${fullOrder.orderNumber} telah kami terima.`,
-                    actionUrl: `/account/orders`,
+                    // Guests have no dashboard: send them their private order link instead.
+                    actionUrl: fullOrder.userId
+                      ? `/account/orders`
+                      : buildOrderAccessPath(fullOrder.orderNumber, fullOrder.guestToken),
                     emailTemplateKey: 'PAYMENT_SUCCESS',
                     emailCategory: 'TRANSACTIONAL',
                     metadata: {
@@ -141,7 +145,9 @@ export class DomainEventService {
                   eventType: 'PRODUCT_DELIVERED',
                   title: `Produk Anda Sudah Tersedia — Order #${orderItem.order.orderNumber}`,
                   message: `Kabar gembira! Produk digital ${orderItem.productName} (${orderItem.variantName}) untuk Order #${orderItem.order.orderNumber} sudah siap digunakan.`,
-                  actionUrl: `/account/products`,
+                  actionUrl: orderItem.order.userId
+                    ? `/account/products`
+                    : buildOrderAccessPath(orderItem.order.orderNumber, orderItem.order.guestToken),
                   emailTemplateKey: 'PRODUCT_DELIVERED',
                   emailCategory: 'TRANSACTIONAL',
                   metadata: {

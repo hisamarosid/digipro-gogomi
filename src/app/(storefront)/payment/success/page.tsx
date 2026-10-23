@@ -1,19 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
 import { db } from '@/lib/db/prisma';
-import { CheckCircle2, ArrowRight, ShieldCheck, Key, Copy, UserPlus, ShoppingBag, FileText } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ShieldCheck, Key, Copy, ShoppingBag, FileText } from 'lucide-react';
 import { formatIDR, formatDateJakarta } from '@/lib/utils/formatters';
 import { CheckoutProgress } from '@/components/storefront/CheckoutProgress';
 import { FirstTimeGuideOrchestrator } from '@/components/account/FirstTimeGuideOrchestrator';
 
 import { formatRevealedPayload } from '@/lib/security/encryption';
+import { canAccessOrder } from '@/lib/auth/order-access';
+import { ClaimAccountCard } from '@/components/storefront/ClaimAccountCard';
 
 export default async function PaymentSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ orderNumber?: string }>;
+  searchParams: Promise<{ orderNumber?: string; t?: string }>;
 }) {
-  const { orderNumber } = await searchParams;
+  const { orderNumber, t: accessToken } = await searchParams;
 
   if (!orderNumber) {
     return (
@@ -42,6 +44,24 @@ export default async function PaymentSuccessPage({
       <div className="mx-auto max-w-md px-4 py-20 text-center space-y-4">
         <h2 className="text-xl font-bold text-white">Order {orderNumber} Tidak Ditemukan</h2>
         <Link href="/" className="text-xs font-bold text-emerald-400">Kembali ke Beranda</Link>
+      </div>
+    );
+  }
+
+  // The order number is not a secret: delivery details are only shown to the owner, staff,
+  // or someone holding the private link (token) that was sent to the buyer.
+  if (!(await canAccessOrder(order, accessToken))) {
+    return (
+      <div className="mx-auto max-w-md px-4 py-20 text-center space-y-4">
+        <h2 className="text-xl font-bold text-white">Link Pesanan Tidak Valid</h2>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Demi keamanan, detail pesanan hanya bisa dibuka lewat link pribadi dari email pesanan, atau setelah masuk ke akun Anda.
+          Kehilangan link? Gunakan Lacak Pesanan, kami kirim ulang ke email pembeli.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
+          <Link href={`/track?orderNumber=${encodeURIComponent(orderNumber)}`} className="rounded-xl bg-emerald-500 hover:bg-emerald-400 px-5 py-2.5 text-xs font-bold text-slate-950">Lacak Pesanan</Link>
+          <Link href="/login" className="rounded-xl bg-slate-800 hover:bg-slate-700 px-5 py-2.5 text-xs font-bold text-white">Masuk ke Akun</Link>
+        </div>
       </div>
     );
   }
@@ -116,32 +136,15 @@ export default async function PaymentSuccessPage({
           })}
         </div>
 
-        {/* Guest Registration CTA Banner if order made by guest */}
-        {isGuestOrder && (
-          <div className="rounded-2xl bg-gradient-to-br from-cyan-950/60 to-blue-950/60 border border-cyan-500/30 p-4 space-y-3 mt-4">
-            <div className="flex items-start gap-2.5">
-              <UserPlus className="h-5 w-5 text-cyan-400 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <h4 className="font-bold text-xs text-white">Simpan Pesanan ke Akun Member</h4>
-                <p className="text-[11px] text-cyan-200/80 leading-relaxed">
-                  Buat akun dengan email <strong className="text-white font-mono">{order.guestEmail}</strong> agar pesanan ini otomatis tersimpan di dashboard Anda, mempermudah klaim garansi, dan mengaktifkan bonus Store Coins!
-                </p>
-              </div>
-            </div>
-            <Link
-              href={`/register?email=${encodeURIComponent(order.guestEmail || '')}&redirect=/account/orders`}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 py-2.5 text-xs font-bold text-slate-950 transition shadow-md shadow-cyan-500/20"
-            >
-              <UserPlus className="h-4 w-4" />
-              <span>Daftar Akun &amp; Simpan Pesanan</span>
-            </Link>
-          </div>
+        {/* Guest: one-click account from the buyer's own inbox (see ClaimAccountCard) */}
+        {isGuestOrder && order.guestEmail && (
+          <ClaimAccountCard orderNumber={order.orderNumber} accessToken={accessToken || ''} email={order.guestEmail} />
         )}
 
         {/* Invoice Link Action */}
         <div className="pt-2">
           <Link
-            href={`/invoice/${order.orderNumber}`}
+            href={`/invoice/${order.orderNumber}${accessToken ? `?t=${encodeURIComponent(accessToken)}` : ''}`}
             target="_blank"
             className="w-full flex items-center justify-center gap-2 rounded-2xl bg-slate-950 hover:bg-slate-900 border border-slate-700/80 py-3 text-xs font-bold text-slate-200 hover:text-white transition shadow-sm"
           >

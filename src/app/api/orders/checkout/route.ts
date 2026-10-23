@@ -8,6 +8,7 @@ import { ReservationService } from '@/services/reservation.service';
 import { FulfillmentQueueService } from '@/services/queue.service';
 import { FulfillmentService } from '@/services/fulfillment.service';
 import { checkRateLimit } from '@/lib/security/rate-limit';
+import { buildOrderAccessPath } from '@/lib/utils/order-link';
 import { NotificationOrchestrator } from '@/services/email/email-orchestrator';
 import { CustomerNotificationCategory, OrderStatus, PaymentStatus } from '../../../../../generated/prisma';
 
@@ -121,7 +122,7 @@ export async function POST(req: NextRequest) {
           message: cashPayable === 0
             ? `Pesanan #${order.orderNumber} berhasil dibayar 100% dengan Store Coins!`
             : `Pesanan #${order.orderNumber} berhasil dibuat. Silakan selesaikan pembayaran QRIS.`,
-          actionUrl: cashPayable === 0 ? `/payment/success?orderNumber=${order.orderNumber}` : `/payment/${order.orderNumber}`,
+          actionUrl: cashPayable === 0 ? buildOrderAccessPath(order.orderNumber, order.guestToken) : `/payment/${order.orderNumber}`,
           emailTemplateKey: 'ORDER_CREATED',
           emailCategory: 'TRANSACTIONAL',
           metadata: {

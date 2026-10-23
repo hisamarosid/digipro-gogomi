@@ -14,6 +14,7 @@ export default function CheckoutPage() {
   const { items, subtotal, couponCode, setCouponCode, clearCart } = useCart();
 
   const [guestEmail, setGuestEmail] = useState('');
+  const [guestEmailConfirm, setGuestEmailConfirm] = useState('');
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
   const [invitationEmail, setInvitationEmail] = useState('');
@@ -159,6 +160,12 @@ export default function CheckoutPage() {
       return;
     }
 
+    // A typo here would send the order link to a stranger, so guests retype their email.
+    if (!loggedInUser && guestEmailConfirm.trim().toLowerCase() !== cleanGuestEmail.toLowerCase()) {
+      toast.error('Konfirmasi email tidak sama. Periksa lagi penulisan email Anda.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/orders/checkout', {
@@ -192,7 +199,7 @@ export default function CheckoutPage() {
       clearCart();
       if (isFullCoinPayment || finalCash === 0 || resData.data?.isFullCoinPayment) {
         toast.success('Pembayaran 100% Store Coin Berhasil! Lisensi/kredensial digital Anda telah siap.');
-        router.push(`/payment/success?orderNumber=${orderNumber}`);
+        router.push(`/payment/success?orderNumber=${orderNumber}${guestToken ? `&t=${encodeURIComponent(guestToken)}` : ''}`);
       } else {
         toast.success('Pesanan berhasil dibuat! Mengalihkan ke QRIS Pembayaran...');
         router.push(`/payment/${orderNumber}`);
@@ -329,6 +336,28 @@ export default function CheckoutPage() {
                   <p className="text-[10px] text-slate-500 mt-1">Kredensial dan lisensi akan otomatis dikirimkan ke email ini.</p>
                 )}
               </div>
+
+              {!loggedInUser && (
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Ulangi Email *</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="Ketik ulang email Anda"
+                    value={guestEmailConfirm}
+                    onChange={(e) => setGuestEmailConfirm(e.target.value)}
+                    onPaste={(e) => e.preventDefault()}
+                    className={`w-full rounded-xl bg-slate-950 border p-3 text-white placeholder-slate-500 focus:outline-none transition ${
+                      guestEmailConfirm && guestEmailConfirm.trim().toLowerCase() !== cleanGuestEmail.toLowerCase()
+                        ? 'border-rose-500/80 focus:border-rose-500'
+                        : 'border-slate-800 focus:border-cyan-500'
+                    }`}
+                  />
+                  {guestEmailConfirm && guestEmailConfirm.trim().toLowerCase() !== cleanGuestEmail.toLowerCase() && (
+                    <p className="text-[11px] text-rose-400 mt-1">Email belum sama dengan kolom di atas.</p>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className="block text-slate-300 font-medium mb-1">Nomor WhatsApp (Opsional)</label>

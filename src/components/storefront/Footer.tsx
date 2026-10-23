@@ -108,6 +108,7 @@ export function Footer({ siteSettings }: FooterProps) {
           <h4 className="font-bold text-white mb-3 text-xs uppercase tracking-wider">{t('footer_help_policy')}</h4>
           <ul className="space-y-2 text-xs">
             <li><Link href="/help" className="hover:text-cyan-400 font-bold text-cyan-400 transition">Pusat Bantuan (Helpdesk)</Link></li>
+            <li><Link href="/track" className="hover:text-cyan-400 transition">Lacak Pesanan</Link></li>
             <li><Link href="/faq" className="hover:text-cyan-400 transition">FAQ Pertanyaan Umum</Link></li>
             <li><Link href="/terms" className="hover:text-cyan-400 transition">{t('footer_terms')}</Link></li>
             <li><Link href="/privacy" className="hover:text-cyan-400 transition">{t('footer_privacy')}</Link></li>
