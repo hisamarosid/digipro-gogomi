@@ -97,8 +97,14 @@ export class EmailQueueService {
     for (const job of jobs) {
       try {
         // Atomic DB Lock
-        await db.emailJob.update({
-          where: { id: job.id },
+        const locked = await db.emailJob.updateMany({
+          where: {
+            id: job.id,
+            OR: [
+              { status: { in: [EmailJobStatus.QUEUED, EmailJobStatus.RETRY_SCHEDULED] } },
+              { status: EmailJobStatus.PROCESSING, lockedAt: { lte: fiveMinutesAgo } },
+            ],
+          },
           data: {
             status: EmailJobStatus.PROCESSING,
             lockedAt: now,
@@ -107,6 +113,8 @@ export class EmailQueueService {
             lastAttemptAt: now,
           },
         });
+        // Another worker (cron or post-enqueue trigger) already took this job.
+        if (locked.count === 0) continue;
 
         // Parse Safe Metadata
         let templateData = {};

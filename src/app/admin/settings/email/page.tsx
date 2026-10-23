@@ -340,13 +340,28 @@ export default function AdminEmailSettingsAndLogsPage() {
                       </td>
                       <td className="p-4 font-bold text-white max-w-xs truncate">{item.subjectSnapshot}</td>
                       <td className="p-4 font-mono text-[11px] text-cyan-300">{item.templateKey}</td>
-                      <td className="p-4">{getStatusBadge(item.status)}</td>
+                      <td className="p-4">
+                        {getStatusBadge(item.status)}
+                        {(item.status === 'FAILED' || item.status === 'RETRY_SCHEDULED') && item.lastErrorMessageSafe && (
+                          <div
+                            className="mt-1 max-w-[220px] truncate text-[10px] text-rose-300/80"
+                            title={`${item.lastErrorCode || ''} ${item.lastErrorMessageSafe}`}
+                          >
+                            {item.lastErrorCode ? `${item.lastErrorCode}: ` : ''}{item.lastErrorMessageSafe}
+                          </div>
+                        )}
+                        {item.status === 'RETRY_SCHEDULED' && item.nextAttemptAt && (
+                          <div className="mt-0.5 text-[10px] text-slate-500">
+                            Coba lagi: {new Date(item.nextAttemptAt).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}
+                          </div>
+                        )}
+                      </td>
                       <td className="p-4 font-mono text-center">{item.attemptCount} / {item.maxAttempts}</td>
                       <td className="p-4 text-slate-400 text-[11px]">
                         {new Date(item.queuedAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}
                       </td>
                       <td className="p-4 text-right">
-                        {item.status === 'FAILED' && (
+                        {(item.status === 'FAILED' || item.status === 'RETRY_SCHEDULED') && (
                           <button
                             type="button"
                             onClick={() => handleRetryJob(item.id)}

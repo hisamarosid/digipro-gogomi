@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth/session';
 import { db } from '@/lib/db/prisma';
+import { EmailQueueService } from '@/services/email/email-queue.service';
 import { EmailJobStatus } from '../../../../../../generated/prisma';
 
 export async function GET(req: NextRequest) {
@@ -89,6 +90,10 @@ export async function PATCH(req: NextRequest) {
           nextAttemptAt: new Date(),
           attemptCount: 0,
         },
+      });
+      // Send right away instead of waiting for the next cron tick.
+      process.nextTick(() => {
+        EmailQueueService.processEmailQueue().catch(() => {});
       });
       return NextResponse.json({ success: true, message: 'Email job dijadwalkan ulang untuk retry' });
     }

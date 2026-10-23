@@ -77,6 +77,11 @@ export class EmailProviderService {
                     user,
                     pass,
                 },
+                // Reuse a small number of connections instead of opening one per email;
+                // many parallel logins are a common cause of SMTP throttling on shared mail servers.
+                pool: true,
+                maxConnections: 2,
+                maxMessages: 100,
                 connectionTimeout: 10000,
                 greetingTimeout: 10000,
                 socketTimeout: 15000,
