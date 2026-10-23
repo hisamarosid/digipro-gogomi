@@ -55,6 +55,8 @@ export default async function ProductsCatalogPage({
             sku: true,
             price: true,
             compareAtPrice: true,
+            unitLabel: true,
+            quotaRemaining: true,
             active: true,
             deliveryType: true,
             deliveryModel: true,

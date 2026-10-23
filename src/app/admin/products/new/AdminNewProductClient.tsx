@@ -44,6 +44,8 @@ export interface VariantFormItem {
   sku: string;
   price: string;
   compareAtPrice: string;
+  unitLabel?: string;
+  quotaRemaining?: string;
   defaultCostAmount: string;
   deliveryType: string;
   deliveryModel: string;
@@ -81,6 +83,7 @@ export function AdminNewProductClient({ categories }: AdminNewProductClientProps
   const [sku, setSku] = useState('');
   const [categoryId, setCategoryId] = useState(categories[0]?.id || '');
   const [shortDesc, setShortDesc] = useState('');
+  const [etaLabel, setEtaLabel] = useState('');
   const [fullDesc, setFullDesc] = useState('');
   
   // Images
@@ -487,6 +490,7 @@ export function AdminNewProductClient({ categories }: AdminNewProductClientProps
           sku: finalSku,
           categoryId,
           shortDesc: shortDesc.trim(),
+          etaLabel: etaLabel.trim() || null,
           fullDesc: fullDesc.trim(),
           thumbnail: thumbnail.trim(),
           gallery: gallery.map((g) => g.trim()).filter(Boolean),
@@ -498,6 +502,8 @@ export function AdminNewProductClient({ categories }: AdminNewProductClientProps
             sku: v.sku.trim() || `${finalSku}-V${idx + 1}`,
             price: Number(v.price) || 0,
             compareAtPrice: v.compareAtPrice ? Number(v.compareAtPrice) : null,
+            unitLabel: v.unitLabel?.trim() || null,
+            quotaRemaining: v.quotaRemaining === '' || v.quotaRemaining == null ? null : Number(v.quotaRemaining),
             defaultCostAmount: Number(v.defaultCostAmount) || 0,
             deliveryType: v.deliveryType,
             deliveryModel: v.deliveryModel,
@@ -721,6 +727,19 @@ export function AdminNewProductClient({ categories }: AdminNewProductClientProps
                 onChange={(e) => setShortDesc(e.target.value)}
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3.5 py-2.5 text-white focus:outline-none focus:border-cyan-500"
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-300">Estimasi Pengerjaan (khusus Jasa)</label>
+              <input
+                type="text"
+                maxLength={60}
+                placeholder="Contoh: 1x24 jam, 3 hari, 1 bulan"
+                value={etaLabel}
+                onChange={(e) => setEtaLabel(e.target.value)}
+                className="w-full rounded-xl bg-slate-950 border border-slate-800 px-3.5 py-2.5 text-white focus:outline-none focus:border-cyan-500"
+              />
+              <p className="text-[10px] text-slate-500">Tampil sebagai label waktu di gambar kartu produk jasa.</p>
             </div>
 
             <div className="space-y-1.5">
@@ -951,6 +970,30 @@ export function AdminNewProductClient({ categories }: AdminNewProductClientProps
                             value={variant.compareAtPrice}
                             onChange={(e) => updateVariant(variant.id, 'compareAtPrice', e.target.value)}
                             className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-slate-400 focus:outline-none focus:border-cyan-500"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="font-bold text-slate-300">Satuan Harga (Jasa)</label>
+                          <input
+                            type="text"
+                            maxLength={60}
+                            value={variant.unitLabel || ''}
+                            onChange={(e) => updateVariant(variant.id, 'unitLabel', e.target.value)}
+                            placeholder="Contoh: 1 CV, 1 Project"
+                            className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-slate-300 focus:outline-none focus:border-cyan-500"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="font-bold text-slate-300">Sisa Kuota (Jasa)</label>
+                          <input
+                            type="number"
+                            min={0}
+                            value={variant.quotaRemaining ?? ''}
+                            onChange={(e) => updateVariant(variant.id, 'quotaRemaining', e.target.value)}
+                            placeholder="Kosongkan = tanpa batas"
+                            className="w-full rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-slate-300 focus:outline-none focus:border-cyan-500"
                           />
                         </div>
 

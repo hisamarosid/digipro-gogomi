@@ -6,6 +6,7 @@ import { LoyaltyService } from './loyalty.service';
 import { FulfillmentService } from './fulfillment.service';
 import { DomainEventService } from './domainEvent.service';
 import { OrderStatus, PaymentStatus } from '../../generated/prisma';
+import { consumeServiceQuota } from './serviceQuota.service';
 
 export interface CreateOrderItemInput {
   variantId: string;
@@ -228,6 +229,7 @@ export class OrderService {
               where: { id: variant.productId },
               data: { soldCount: { increment: item.quantity } },
             });
+            await consumeServiceQuota(tx, item.variantId, item.quantity);
           }
         }
 

@@ -561,6 +561,7 @@ model Product {
   seoTitle    String?
   seoDesc     String?
   publishedAt DateTime?
+  etaLabel    String? // Service cards: estimated completion, e.g. '1x24 jam'
 
   // Customer Guide (Tutorial & Product Terms)
   tutorialContent             String?
@@ -611,6 +612,8 @@ model ProductVariant {
   sku              String       @unique
   price            Int          // Price in IDR (integer)
   compareAtPrice   Int?         // Strike-through price in IDR
+  unitLabel        String?      // Service cards: what the price covers, e.g. '1 CV'
+  quotaRemaining   Int?         // Service cards: open slots left (NULL = unlimited)
   cost             Int          @default(0) // Cost price for calculation
   stockMode        String       @default("INVENTORY") // INVENTORY or UNLIMITED
   deliveryType     DeliveryType  @default(LICENSE_KEY)

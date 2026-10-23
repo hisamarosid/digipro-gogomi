@@ -9,6 +9,7 @@ import { FulfillmentQueueService } from '@/services/queue.service';
 import { FulfillmentService } from '@/services/fulfillment.service';
 import { checkRateLimit } from '@/lib/security/rate-limit';
 import { buildOrderAccessPath } from '@/lib/utils/order-link';
+import { consumeServiceQuota } from '@/services/serviceQuota.service';
 import { NotificationOrchestrator } from '@/services/email/email-orchestrator';
 import { CustomerNotificationCategory, OrderStatus, PaymentStatus } from '../../../../../generated/prisma';
 
@@ -85,6 +86,7 @@ export async function POST(req: NextRequest) {
               where: { id: variant.productId },
               data: { soldCount: { increment: item.quantity } },
             });
+            await consumeServiceQuota(tx, item.variantId, item.quantity);
           }
         }
       });

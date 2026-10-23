@@ -1,4 +1,5 @@
 import { db } from '@/lib/db/prisma';
+import { consumeServiceQuota } from './serviceQuota.service';
 import { autoGoPay } from '@/lib/autogopay';
 import { convertStaticQRIStoDynamic, GOGO_GAMING_STATIC_QR } from '@/lib/qris/emvco';
 import { FulfillmentService } from './fulfillment.service';
@@ -336,6 +337,7 @@ export class PaymentService {
             where: { id: variant.productId },
             data: { soldCount: { increment: item.quantity } },
           });
+          await consumeServiceQuota(tx, item.variantId, item.quantity);
         }
       }
     });
