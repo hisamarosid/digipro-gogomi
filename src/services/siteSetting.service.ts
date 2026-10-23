@@ -82,7 +82,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettingsData = {
   GSC_VERIFICATION_CODE: '',
 
   SUPPORT_EMAIL: 'cs@gogomi.store',
-  SUPPORT_WHATSAPP: '+6281234567890',
+  SUPPORT_WHATSAPP: '+6285178754012',
   SUPPORT_TELEGRAM: '@gogomistore_cs',
   SUPPORT_HOURS: 'Senin - Minggu: 08:00 - 23:00 WIB',
   STORE_ADDRESS: 'Jakarta, Indonesia',

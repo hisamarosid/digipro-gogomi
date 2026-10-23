@@ -910,7 +910,7 @@ async function main() {
         { key: 'STORE_NAME', value: 'Gogomi Store', category: 'GENERAL' },
         { key: 'STORE_DESCRIPTION', value: 'Pusat Produk Digital Legal, Akun Premium & Lisensi Software Terpercaya #1 Indonesia', category: 'GENERAL' },
         { key: 'CONTACT_EMAIL', value: 'support@gogomi.store', category: 'CONTACT' },
-        { key: 'CONTACT_WHATSAPP', value: '+6281234567890', category: 'CONTACT' },
+        { key: 'CONTACT_WHATSAPP', value: '+6285178754012', category: 'CONTACT' },
     ];
 
     for (const s of defaultSettings) {

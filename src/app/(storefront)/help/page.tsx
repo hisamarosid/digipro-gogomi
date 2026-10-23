@@ -151,13 +151,13 @@ export default function HelpHubPage() {
 
         <div className="flex flex-wrap gap-3 pt-2">
           <a
-            href="https://wa.me/6281234567890?text=Halo%20Admin%20Gogomi%20Store%2C%20saya%20butuh%20bantuan"
+            href="https://wa.me/6285178754012?text=Halo%20Admin%20Gogomi%20Store%2C%20saya%20butuh%20bantuan"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-white shadow-md transition"
           >
             <MessageSquare className="h-4 w-4" />
-            <span>WhatsApp CS (+6281234567890)</span>
+            <span>WhatsApp CS (+62 851-7875-4012)</span>
           </a>
 
           <a
